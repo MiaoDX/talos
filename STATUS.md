@@ -12,9 +12,11 @@
   (`examples/ratchet_demo/`), and an end-to-end test (`tests/`). Verified on CPU.
 
 ## Scaffolded (v0 — NOT yet verified)
-- Phase 2–3 scaffolds (distill/repro/graft skills, SkyPilot adapter, escalation/
-  attribution/parallelism) land in subsequent commits and are clearly labeled
-  unverified.
+- **Phase 2** — `distill-paper`, `repro-harness`, `graft-change` skill runbooks
+  (`agent-skill/`) and the `SkyPilotAdapter` scaffold
+  (`src/talos/adapters/skypilot.py`). Runbooks are reviewable; their end-to-end
+  behavior is unverified (they depend on a real codebase / evaluator / cloud).
+- Phase 3 scaffolds land next.
 
 ## Not yet runnable here
 - The GPU reference demo (`examples/nanochat/`) — needs a GPU.

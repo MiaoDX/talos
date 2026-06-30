@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Phase 2 (v0, unverified)** — `distill-paper` / `repro-harness` /
+  `graft-change` skill runbooks and a `SkyPilotAdapter` scaffold
+  (`src/talos/adapters/skypilot.py`). Documented and reviewable; not yet run
+  end-to-end (no cloud/codebase in CI).
 - **Phase 1** — the keep/revert ratchet engine (`src/talos/ratchet.py`), the
   `local` subprocess adapter (`src/talos/adapters/local.py`, budget-bounded), the
   git+TSV append-only ledger (`src/talos/ledger.py`), the `ratchet-experiment`
