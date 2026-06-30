@@ -11,8 +11,9 @@ and discussed in the open.
 - The deep research that informs the design, reorganized by topic
   (`docs/concepts/`, `docs/survey/`), with the full reports under `docs/research/`.
 - A phased adoption plan (`ROADMAP.md`).
-- Contract placeholders for the eval layer (`constraints/`) and the agent skills
-  (`agent-skill/`).
+- **L2 eval contract** (`src/talos/contract.py`) + a runnable, pure-Python
+  reference evaluator (`constraints/examples/toy_mlp/`) — **Phase 0 done**.
+- Skill placeholders (`agent-skill/`).
 
 ## What does NOT exist yet
 - Working `agent-skill/` implementations (`distill-paper`, `repro-harness`,

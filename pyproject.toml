@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "talos-autoresearch"
+version = "0.0.0"
+description = "An eval-driven, domain-transferable AutoResearch framework — skills for coding agents."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []          # the reference core is pure-Python / zero-dependency
+
+[tool.setuptools.packages.find]
+where = ["src"]

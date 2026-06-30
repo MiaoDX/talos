@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Phase 0** — the L2 eval contract (`src/talos/contract.py`: `EvalResult`,
+  `Veto`, `is_improvement`) and a runnable, pure-Python reference evaluator
+  (`constraints/examples/toy_mlp/`: frozen `evaluator.py`, agent-editable
+  `solution.py`, `program.md`).
 - Initial repository scaffold: README, ARCHITECTURE, ROADMAP, STATUS.
 - Concept docs (`docs/concepts/`): the AutoResearch ratchet paradigm, the
   eval-first principle, and the distill → reproduce → graft → validate workflow.
