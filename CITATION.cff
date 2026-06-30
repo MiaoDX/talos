@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use Talos, please cite it as below."
+title: "Talos: an eval-driven, domain-transferable AutoResearch framework"
+abstract: >-
+  Talos packages community best practices for autonomous, agentic ML
+  research-and-experimentation ("AutoResearch") as portable skills for coding
+  agents (Claude Code, OpenAI Codex). It is eval-driven by design and built to
+  transfer across domains, with autonomous driving and robotics as its first
+  two instantiations.
+type: software
+authors:
+  - alias: MiaoDX
+    name: "MiaoDX"
+repository-code: "https://github.com/MiaoDX/talos"
+url: "https://github.com/MiaoDX/talos"
+license: MIT
+date-released: 2026-06-30
+keywords:
+  - autoresearch
+  - agentic-ml
+  - coding-agents
+  - evaluation
+  - autonomous-driving
+  - robotics

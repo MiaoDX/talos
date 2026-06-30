@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+.python-version
+
+# Experiment scratch (the ledger TSV is illustrative; keep real ledgers out of git by default)
+runs/
+scratch/
+*.log
+wandb/
+mlruns/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
