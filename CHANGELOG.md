@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Phase 3 (v0, unverified)** — `escalate` (route safety-critical diffs to
+  human review; switch search strategy on plateau) and `attribute` (ablation +
+  multi-seed confirmation) skill runbooks, plus `src/talos/orchestration.py`
+  (`factorial_grid` tested; `run_grid` an unverified scaffold).
 - **Phase 2 (v0, unverified)** — `distill-paper` / `repro-harness` /
   `graft-change` skill runbooks and a `SkyPilotAdapter` scaffold
   (`src/talos/adapters/skypilot.py`). Documented and reviewable; not yet run

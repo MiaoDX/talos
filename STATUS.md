@@ -16,7 +16,9 @@
   (`agent-skill/`) and the `SkyPilotAdapter` scaffold
   (`src/talos/adapters/skypilot.py`). Runbooks are reviewable; their end-to-end
   behavior is unverified (they depend on a real codebase / evaluator / cloud).
-- Phase 3 scaffolds land next.
+- **Phase 3** — `escalate` and `attribute` skill runbooks (`agent-skill/`) and a
+  parallel/factorial-grid orchestration scaffold (`src/talos/orchestration.py`;
+  `factorial_grid` is real and tested, `run_grid` is an unverified scaffold).
 
 ## Not yet runnable here
 - The GPU reference demo (`examples/nanochat/`) — needs a GPU.
