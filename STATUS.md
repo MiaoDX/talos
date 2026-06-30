@@ -1,26 +1,25 @@
 # Status
 
-**Stage: pre-alpha (documentation-first).**
+**Early. Phase 0–1 are implemented and verified on CPU; Phase 2–3 are v0 scaffolds
+(documented but not yet verified).**
 
-Talos today is a *design + methodology* repository, not yet a runnable tool. We
-are publishing the thinking before the code so the architecture can be reviewed
-and discussed in the open.
+## Implemented & verified
+- **Phase 0** — L2 eval contract (`src/talos/contract.py`) + a frozen, pure-Python
+  reference evaluator (`constraints/examples/toy_mlp/`).
+- **Phase 1** — the keep/revert ratchet (`src/talos/ratchet.py`), the `local`
+  subprocess adapter (`src/talos/adapters/local.py`), the git+TSV ledger
+  (`src/talos/ledger.py`), the `ratchet-experiment` skill, a runnable CPU demo
+  (`examples/ratchet_demo/`), and an end-to-end test (`tests/`). Verified on CPU.
 
-## What exists now
-- A clear thesis and architecture (`README.md`, `ARCHITECTURE.md`).
-- The deep research that informs the design, reorganized by topic
-  (`docs/concepts/`, `docs/survey/`), with the full reports under `docs/research/`.
-- A phased adoption plan (`ROADMAP.md`).
-- **L2 eval contract** (`src/talos/contract.py`) + a runnable, pure-Python
-  reference evaluator (`constraints/examples/toy_mlp/`) — **Phase 0 done**.
-- Skill placeholders (`agent-skill/`).
+## Scaffolded (v0 — NOT yet verified)
+- Phase 2–3 scaffolds (distill/repro/graft skills, SkyPilot adapter, escalation/
+  attribution/parallelism) land in subsequent commits and are clearly labeled
+  unverified.
 
-## What does NOT exist yet
-- Working `agent-skill/` implementations (`distill-paper`, `repro-harness`,
-  `graft-change`, `ratchet-experiment`).
-- Reference execution adapters (`local`, `skypilot`).
-- A runnable end-to-end demo.
+## Not yet runnable here
+- The GPU reference demo (`examples/nanochat/`) — needs a GPU.
+- Production domain evaluators — each sub-team writes its own under `constraints/`.
 
 ## Next
-See `ROADMAP.md`. The first milestone (Phase 0) is **building an evaluator**,
-not writing a skill — the evaluator is the precondition for everything else.
+See `ROADMAP.md`. The real Phase 0 for a given direction is building *that domain's*
+closed-loop evaluator.

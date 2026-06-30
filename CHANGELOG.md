@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Phase 1** — the keep/revert ratchet engine (`src/talos/ratchet.py`), the
+  `local` subprocess adapter (`src/talos/adapters/local.py`, budget-bounded), the
+  git+TSV append-only ledger (`src/talos/ledger.py`), the `ratchet-experiment`
+  skill, a runnable CPU demo (`examples/ratchet_demo/`), the GPU reference doc
+  (`examples/nanochat/`), and an end-to-end test (`tests/test_ratchet_loop.py`).
 - **Phase 0** — the L2 eval contract (`src/talos/contract.py`: `EvalResult`,
   `Veto`, `is_improvement`) and a runnable, pure-Python reference evaluator
   (`constraints/examples/toy_mlp/`: frozen `evaluator.py`, agent-editable

@@ -1,25 +1,24 @@
 # agent-skill/ — the Talos skills (L3)
 
-> **Placeholder.** Talos is pre-alpha; this directory documents the four planned
-> skills. No implementations yet — these arrive in Phase 1+ (see
-> [`../ROADMAP.md`](../ROADMAP.md)).
-
 Skills are portable `SKILL.md` packages for Claude Code and OpenAI Codex. They map
-one-to-one onto the workflow ([`../docs/concepts/workflow.md`](../docs/concepts/workflow.md)):
+one-to-one onto the workflow ([`../docs/concepts/workflow.md`](../docs/concepts/workflow.md)).
 
-| Skill | Stage | What it does |
+| Skill | Stage | Status |
 | --- | --- | --- |
-| `distill-paper` | discover & distill | read a paper/product (+ key references); emit a structured spec: mechanism, claimed metric, minimal repro, constraints |
-| `repro-harness` | reproduce / confirm | confirm the idea works in isolation against a frozen evaluator; guard against fabricated results |
-| `graft-change` | graft | integrate the idea into the *existing* codebase behind tests; windowed edits + git-worktree isolation |
-| `ratchet-experiment` | validate | the keep/revert loop: propose → bounded run → score → commit-or-revert → log; ablation for attribution; escalation when plateaued |
+| [`ratchet-experiment`](./ratchet-experiment/SKILL.md) | validate | **implemented (Phase 1)** — keep/revert loop; runnable CPU demo |
+| [`distill-paper`](./distill-paper/SKILL.md) | discover & distill | **v0 scaffold (Phase 2, unverified)** |
+| [`repro-harness`](./repro-harness/SKILL.md) | reproduce / confirm | **v0 scaffold (Phase 2, unverified)** |
+| [`graft-change`](./graft-change/SKILL.md) | graft | **v0 scaffold (Phase 2, unverified)** |
+| [`escalate`](./escalate/SKILL.md) / [`attribute`](./attribute/SKILL.md) | escalation / attribution | **v0 scaffold (Phase 3, unverified)** |
+
+`ratchet-experiment` is backed by a verified reference implementation
+([`../src/talos/ratchet.py`](../src/talos/ratchet.py)) and a runnable demo
+([`../examples/ratchet_demo/`](../examples/ratchet_demo/)). The v0 scaffolds are
+runbooks whose end-to-end behavior is **not yet verified** (they depend on a real
+codebase / evaluator); they will be hardened once a domain Phase-0 evaluator exists.
 
 ## Conventions (see ../AGENTS.md)
 - Bounded autonomy: default iteration cap + time/compute budget.
 - Crash recovery: fix a few times, else revert and log `status=crash`.
 - Git-as-memory; three-state self-assessment (keep / discard / crash).
 - Keep `SKILL.md` bodies short; push detail to `references/`.
-
-## Build order
-Phase 1 starts with **`ratchet-experiment`** + the `local` adapter, demonstrated
-by reproducing Karpathy's nanochat `autoresearch` task on a single GPU.
