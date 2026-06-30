@@ -9,7 +9,7 @@ discussion are at least as valuable as code right now.
 - **Survey** (`docs/survey/`) — the landscape research, by topic.
 - **Architecture** (`ARCHITECTURE.md`) — the layered design (L0–L3).
 - **Roadmap** (`ROADMAP.md`) — what we are building and in what order.
-- **Provenance** (`docs/zh/research/`) — the original research reports.
+- **Deep research** (`docs/research/`) — the two full reports.
 
 ## Ground rules that matter here
 Talos is a framework for running agent-written experiments. A few principles are

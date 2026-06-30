@@ -4,7 +4,7 @@
 
 > *Talos was the bronze automaton that tirelessly walked the shores of Crete. This Talos tirelessly runs your experiments while you sleep — and only keeps the ones the evaluator says are better.*
 
-[简体中文](./README.zh-CN.md) · [Architecture](./ARCHITECTURE.md) · [Roadmap](./ROADMAP.md) · [Status](./STATUS.md)
+[Architecture](./ARCHITECTURE.md) · [Roadmap](./ROADMAP.md) · [Status](./STATUS.md)
 
 ---
 
@@ -87,7 +87,7 @@ evaluator**, not writing a skill.
   [`eval-ecosystems`](./docs/survey/eval-ecosystems.md),
   [`landscape`](./docs/survey/landscape.md)
 - **Pitfalls** — [`docs/pitfalls.md`](./docs/pitfalls.md)
-- **Provenance** — original research reports in [`docs/zh/research/`](./docs/zh/research/)
+- **Deep research (full reports)** — [`docs/research/`](./docs/research/)
 
 ## Acknowledgements
 

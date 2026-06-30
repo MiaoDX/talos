@@ -13,8 +13,7 @@ All notable changes to this project are documented here. The format is based on
   skills, safety & sandboxing, eval ecosystems (AD + robotics), and the
   competitive landscape — the deep research reorganized by topic.
 - `docs/pitfalls.md`: structural failure modes and anti-patterns.
-- Provenance archive of the original (Chinese) research reports under
-  `docs/zh/research/`.
+- Full deep-research reports (English) under `docs/research/`.
 - Placeholder contracts: `constraints/` (L2 eval/veto contract) and
   `agent-skill/` (the four planned skills).
 

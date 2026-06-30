@@ -9,8 +9,7 @@ and discussed in the open.
 ## What exists now
 - A clear thesis and architecture (`README.md`, `ARCHITECTURE.md`).
 - The deep research that informs the design, reorganized by topic
-  (`docs/concepts/`, `docs/survey/`), with the original reports archived under
-  `docs/zh/research/`.
+  (`docs/concepts/`, `docs/survey/`), with the full reports under `docs/research/`.
 - A phased adoption plan (`ROADMAP.md`).
 - Contract placeholders for the eval layer (`constraints/`) and the agent skills
   (`agent-skill/`).
