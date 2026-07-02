@@ -1,0 +1,20 @@
+#!/bin/sh
+set -u
+
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$repo_root" || exit 0
+
+if [ "${TALOS_SKIP_UV_SYNC:-}" = "1" ]; then
+  exit 0
+fi
+
+if ! command -v uv >/dev/null 2>&1; then
+  echo "talos: uv not found; install uv, then run: uv sync" >&2
+  exit 0
+fi
+
+if [ -f uv.lock ]; then
+  uv sync --frozen || echo "talos: uv sync --frozen failed; run it manually for details" >&2
+elif [ -f pyproject.toml ]; then
+  uv sync || echo "talos: uv sync failed; run it manually for details" >&2
+fi
