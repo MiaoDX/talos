@@ -1,8 +1,8 @@
 # Survey: compute / execution backends (L0)
 
-**Recommendation:** default to **SkyPilot** (k8s adapter) for BYO-cloud, plus a
-**`local` subprocess** adapter for the single-GPU case. Do not build a new cloud
-abstraction.
+**Recommendation:** default to **SkyPilot** for BYO-cloud / Kubernetes / Slurm /
+existing-machine pools, plus a **`local` subprocess** adapter for the single-GPU
+case. Do not build a new cloud abstraction.
 
 ## Why SkyPilot is the default
 - BYO-cloud across 20+ clouds + Kubernetes + Slurm, with cost arbitrage, gang
@@ -11,6 +11,9 @@ abstraction.
 - Strongest AutoResearch track record: the SkyPilot team ran Karpathy's
   `autoresearch` in parallel on 13×H100 + 3×H200, ~910 experiments in 8h
   (~9× the sequential rate) for ≈$309; Shopify runs all AI training on SkyPilot.
+- **Existing GPU machines** should first be reached through SkyPilot SSH Node
+  Pools. This validates the shared task interface without making the first GPU
+  demo depend on Kubernetes operations.
 - **China clouds** (Alibaba Cloud, Volcano Engine) are reached via their managed
   Kubernetes (ACK, VKE) or a custom SkyPilot plugin — which is exactly the
   "thin adapter, each org plugs in its own" model.
@@ -19,7 +22,7 @@ abstraction.
 
 | Option | Model | Strength | Limitation |
 | --- | --- | --- | --- |
-| **SkyPilot** | BYOC multi-cloud/k8s/Slurm launcher | most complete; agent skill; proven | you operate it; many small details |
+| **SkyPilot** | BYOC multi-cloud/k8s/Slurm/SSH launcher | most complete; agent skill; proven | you operate it; many small details |
 | **dstack** | lighter pod orchestration | cleaner UX, any Docker image | weaker cost optimization; k8s backend needs pre-provisioned nodes |
 | **Runhouse** (now Kubetorch) | Pythonic send-functions-to-remote | BYOC, debuggable, K8s-native | smaller community; product pivot |
 | **Modal** | managed serverless `@app.function` | simplest decorator; gVisor sandboxes | NOT BYOC; SDK lock-in; ~2× bare-metal cost |
