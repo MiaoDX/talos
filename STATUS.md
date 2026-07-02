@@ -1,7 +1,23 @@
 # Status
 
-**Early. Phase 0–1 are implemented and verified on CPU; Phase 2–3 are v0 scaffolds
-(documented but not yet verified).**
+**Current state:** Phase 0-1 are implemented and verified on CPU; Phase 2-3 are
+v0 scaffolds, documented but not yet verified end-to-end.
+
+**Next:** See `ROADMAP.md`. The real Phase 0 for a production direction is
+building that domain's frozen closed-loop evaluator.
+
+**Blockers:** no current repository blocker for the CPU reference path. GPU
+demo, SkyPilot execution, and production domain evaluators need external
+hardware, cloud, or domain-specific evaluator work.
+
+## Supported local checks
+
+```bash
+python examples/ratchet_demo/run_demo.py
+python tests/test_ratchet_loop.py
+```
+
+Use `python -m pytest` when pytest is available.
 
 ## Implemented & verified
 - **Phase 0** — L2 eval contract (`src/talos/contract.py`) + a frozen, pure-Python
@@ -18,12 +34,8 @@
   behavior is unverified (they depend on a real codebase / evaluator / cloud).
 - **Phase 3** — `escalate` and `attribute` skill runbooks (`agent-skill/`) and a
   parallel/factorial-grid orchestration scaffold (`src/talos/orchestration.py`;
-  `factorial_grid` is real and tested, `run_grid` is an unverified scaffold).
+  `factorial_grid` is a real helper, `run_grid` is an unverified scaffold).
 
 ## Not yet runnable here
 - The GPU reference demo (`examples/nanochat/`) — needs a GPU.
 - Production domain evaluators — each sub-team writes its own under `constraints/`.
-
-## Next
-See `ROADMAP.md`. The real Phase 0 for a given direction is building *that domain's*
-closed-loop evaluator.

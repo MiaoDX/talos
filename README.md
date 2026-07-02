@@ -4,7 +4,7 @@
 
 > *Talos was the bronze automaton that tirelessly walked the shores of Crete. This Talos tirelessly runs your experiments while you sleep — and only keeps the ones the evaluator says are better.*
 
-[Architecture](./ARCHITECTURE.md) · [Roadmap](./ROADMAP.md) · [Status](./STATUS.md)
+[Architecture](./ARCHITECTURE.md) · [Roadmap](./ROADMAP.md) · [Status](./STATUS.md) · [Human docs](./docs/human/README.md)
 
 ---
 
@@ -92,6 +92,9 @@ specific domain's frozen evaluator**. See [`STATUS.md`](./STATUS.md) and
 
 ## Documentation
 
+- **Current orientation** — [`STATUS.md`](./STATUS.md),
+  [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`ROADMAP.md`](./ROADMAP.md),
+  [`docs/human/README.md`](./docs/human/README.md)
 - **Concepts** — [`docs/concepts/paradigm.md`](./docs/concepts/paradigm.md),
   [`eval-first.md`](./docs/concepts/eval-first.md),
   [`workflow.md`](./docs/concepts/workflow.md)
@@ -104,6 +107,17 @@ specific domain's frozen evaluator**. See [`STATUS.md`](./STATUS.md) and
   [`landscape`](./docs/survey/landscape.md)
 - **Pitfalls** — [`docs/pitfalls.md`](./docs/pitfalls.md)
 - **Deep research (full reports)** — [`docs/research/`](./docs/research/)
+
+## Run locally
+
+The reference core has no third-party runtime dependencies.
+
+```bash
+python examples/ratchet_demo/run_demo.py
+python tests/test_ratchet_loop.py
+```
+
+Use `python -m pytest` when pytest is available.
 
 ## Acknowledgements
 
