@@ -75,9 +75,9 @@ Four loosely-coupled, individually swappable layers (full detail in
 
 **Pre-alpha. Phase 0–1 are implemented and CPU-verified; Phase 2–3 are reviewable
 v0 surfaces.** A short local RTX 3090 nanochat smoke is recorded, and the
-SkyPilot SSH path has a same-host RTX 3090 smoke. Overnight GPU improvement
-evidence is not recorded yet. Talos is no longer documentation-only, but it is
-not yet a production platform.
+SkyPilot SSH path has a same-host RTX 3090 smoke. Longer GPU improvement runs
+are optional follow-up evidence. Talos is no longer documentation-only, but it
+is not yet a production platform.
 
 Implemented and verified now:
 

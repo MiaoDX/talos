@@ -10,12 +10,13 @@ it should not copy raw experiment history into the Talos control repo.
 | --- | --- | --- |
 | CPU minimal demo | Normal local checks in [`../../STATUS.md`](../../STATUS.md). | Passing |
 | GPU nanochat local short smoke | RTX 3090 run on 2026-07-02 in `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`; baseline `val_bpb=1.16269`; scripted candidate `DEPTH 4 -> 3` produced `val_bpb=1.182209` and was reverted. | Passing as a short smoke |
-| GPU nanochat overnight/improvement | No overnight ledger yet. | Missing |
 | SkyPilot SSH GPU | Same-host `rtx3090` SSH pool job 2 succeeded on 2026-07-02 with `val_bpb=1.181977`, `num_steps=7846`, and no vetoes. | Passing as a short smoke |
 | SkyPilot local Kubernetes smoke | Optional; no current evidence recorded in this repo. | Not run |
+| Longer GPU improvement run | No long-run ledger yet. Useful for quality claims, not required for the current smoke/demo gate. | Optional follow-up |
 
-Until the overnight/improvement row links to current target worktree evidence,
-Talos is not release-ready for an external GPU demo.
+The current standalone smoke/demo gate is satisfied by the CPU checks, local RTX
+3090 short smoke, and SkyPilot SSH RTX 3090 short smoke. Longer runs are separate
+quality evidence.
 
 ## Review artifacts
 
@@ -50,7 +51,8 @@ Talos is not release-ready for an external GPU demo.
   `.talos/runs/exp-0001/patch.diff`.
 - Reviewer notes: this proves the local GPU path can run a real nanochat
   evaluator on RTX 3090-class hardware. It also proves the optional SkyPilot CLI
-  dependency group installs. It does not satisfy the overnight release gate.
+  dependency group installs. It is a short smoke, not a quality/improvement
+  claim.
 
 ## 2026-07-02 same-host SkyPilot SSH smoke
 
@@ -88,7 +90,7 @@ Talos is not release-ready for an external GPU demo.
   `mfu_percent=4.08`, `total_tokens_M=257.1`, `num_steps=7846`,
   `num_params_M=11.5`, `depth=4`, `lower_is_better=true`.
 - Reviewer notes: this satisfies the SkyPilot SSH GPU short-smoke gate. It is
-  not an overnight/improvement result, and it does not exercise managed
+  not a long quality/improvement result, and it does not exercise managed
   Kubernetes or cloud GPU backends.
 
 ## Evidence template

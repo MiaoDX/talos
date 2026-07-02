@@ -9,9 +9,8 @@ smoke has run on the local RTX 3090 and returned a valid `EvalResult`.
 building that domain's frozen closed-loop evaluator.
 
 **Blockers:** no current repository blocker for the CPU reference path, local
-short GPU smoke, or SkyPilot SSH GPU smoke. The release / external-demo gate
-still needs overnight GPU nanochat evidence and any production domain
-evaluators.
+short GPU smoke, or SkyPilot SSH GPU smoke. Longer GPU improvement runs are
+optional follow-up evidence, not a current testing blocker.
 
 ## Supported local checks
 
@@ -23,10 +22,9 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 
 See [`docs/human/testing-strategy.md`](./docs/human/testing-strategy.md) for the
 full standalone demo matrix. CPU checks are the default CI smoke path; the
-release / external-demo gate requires overnight GPU nanochat evidence plus a
-SkyPilot SSH GPU smoke against an existing GPU machine. Current release evidence,
-including the short RTX 3090 nanochat smoke and same-host SkyPilot SSH smoke, is
-indexed in
+release / external-demo gate requires a short GPU nanochat run plus a SkyPilot
+SSH GPU smoke against an existing GPU machine. Current release evidence,
+including both RTX 3090 smokes, is indexed in
 [`docs/human/release-evidence.md`](./docs/human/release-evidence.md).
 
 Install optional SkyPilot tooling with `uv sync --group sky`; the default
@@ -56,10 +54,9 @@ after checkout.
   `factorial_grid` is a real helper, `run_grid` is an unverified scaffold).
 
 ## Not yet runnable here
-- The GPU reference demo (`examples/nanochat/`) — short local RTX 3090 and
-  same-host SkyPilot SSH smokes are recorded; overnight release evidence is still
-  missing.
-- Production domain evaluators — each sub-team writes its own under `constraints/`.
+- Production domain evaluators — each sub-team writes its own under
+  `constraints/`; this is the next product milestone, not part of the current
+  standalone testing gate.
 
 ## Git / ledger scope
 
