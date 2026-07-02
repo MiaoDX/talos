@@ -7,13 +7,51 @@ it should not copy raw experiment history into the Talos control repo.
 ## Current state
 
 - CPU minimal demo: verified by the normal local checks in [`../../STATUS.md`](../../STATUS.md).
-- GPU nanochat local: no current evidence recorded in this repo.
-- SkyPilot SSH GPU: no current evidence recorded in this repo.
+- GPU nanochat local: runbook implemented in [`../../examples/nanochat/`](../../examples/nanochat/);
+  short smoke completed on an RTX 3090 on 2026-07-02 in
+  `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`. Baseline `val_bpb=1.16269`;
+  scripted candidate `DEPTH 4 -> 3` produced `val_bpb=1.182209` and was reverted.
+  Overnight/improvement evidence is still missing.
+- SkyPilot SSH GPU: `SkyPilotAdapter` task generation/result parsing and the SSH
+  smoke runbook are implemented; the SkyPilot CLI is available as the optional
+  `sky` dependency group and `uv run --group sky sky --version` reports
+  `0.12.3.post1`; no current SSH-pool launch evidence recorded in this repo.
 - SkyPilot local Kubernetes smoke: optional; no current evidence recorded in this
   repo.
 
 Until the GPU rows above link to current target worktree evidence, Talos is not
 release-ready for an external GPU demo.
+
+## 2026-07-02 RTX 3090 local nanochat smoke
+
+- Commit: Talos worktree under active local changes; target worktree based on
+  upstream `karpathy/autoresearch` `228791f`.
+- Target worktree: `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`
+- CPU checks: `uv run python examples/ratchet_demo/run_demo.py` pass;
+  `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest` pass.
+- GPU local nanochat: `results.tsv` in the target worktree.
+  - baseline: `val_bpb=1.16269`, `training_seconds=300.0`,
+    `num_steps=7249`, `peak_vram_mb=1900.3`, `depth=4`
+  - candidate: `DEPTH 4 -> 3`, `val_bpb=1.182209`, `status=revert`,
+    `artifact_ref=.talos/runs/exp-0001`
+- SkyPilot SSH GPU smoke: not run. `uv sync --group sky` installs the CLI and
+  `uv run --group sky sky api info` currently reports no connected SkyPilot API
+  server. Next proof needs `sky api start` or `sky api login`, plus a configured
+  SSH Node Pool.
+- Hardware/runtime: NVIDIA GeForce RTX 3090, driver `570.211.01`, 24576 MiB;
+  target env `torch==2.9.1+cu128`.
+- Budget: upstream `TIME_BUDGET=300` seconds per train run, using an RTX3090
+  smoke setup commit that sets `DEPTH=4`, `DEVICE_BATCH_SIZE=16`, and
+  `TOTAL_BATCH_SIZE=2**15`.
+- Seeds: none emitted by the upstream train wrapper.
+- Result: local GPU short smoke passed with one baseline and one reverted
+  candidate; no improving keep found in this short smoke.
+- Artifact refs: target `.talos/runs/exp-0001/eval_result.json` and
+  `.talos/runs/exp-0001/patch.diff`.
+- Reviewer notes: this proves the local GPU path can run a real nanochat
+  evaluator on RTX 3090-class hardware. It also proves the optional SkyPilot CLI
+  dependency group installs. It does not satisfy the overnight release gate or
+  the SkyPilot SSH GPU gate.
 
 ## Evidence template
 

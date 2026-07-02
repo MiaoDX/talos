@@ -1,14 +1,17 @@
 # Status
 
 **Current state:** Phase 0-1 are implemented and verified on CPU; Phase 2-3 are
-v0 scaffolds, documented but not yet verified end-to-end.
+v0 surfaces. SkyPilot task generation/result parsing are CPU-tested, and the
+SkyPilot CLI is an optional `uv` dependency group; real SkyPilot infrastructure
+execution is not yet verified end-to-end.
 
 **Next:** See `ROADMAP.md`. The real Phase 0 for a production direction is
 building that domain's frozen closed-loop evaluator.
 
 **Blockers:** no current repository blocker for the CPU reference path. The
-release / external-demo gate still needs a real GPU nanochat run, SkyPilot SSH
-GPU execution, and any production domain evaluators.
+release / external-demo gate still needs overnight GPU nanochat evidence,
+SkyPilot SSH GPU execution against a configured SSH Node Pool, and any production
+domain evaluators.
 
 ## Supported local checks
 
@@ -20,9 +23,13 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 
 See [`docs/human/testing-strategy.md`](./docs/human/testing-strategy.md) for the
 full standalone demo matrix. CPU checks are the default CI smoke path; the
-release / external-demo gate requires a real GPU nanochat run plus a SkyPilot SSH
-GPU smoke against an existing GPU machine. Current release evidence is indexed in
+release / external-demo gate requires overnight GPU nanochat evidence plus a
+SkyPilot SSH GPU smoke against an existing GPU machine. Current release evidence,
+including the short RTX 3090 nanochat smoke, is indexed in
 [`docs/human/release-evidence.md`](./docs/human/release-evidence.md).
+
+Install optional SkyPilot tooling with `uv sync --group sky`; the default
+environment intentionally does not install the SkyPilot dependency tree.
 
 Fresh clones or worktrees should enable the repo hook with
 `git config core.hooksPath .githooks` so `.venv` stays synced from `uv.lock`
@@ -37,17 +44,19 @@ after checkout.
   (`examples/ratchet_demo/`), clean-worktree safeguards, a default iteration cap,
   and end-to-end tests (`tests/`). Verified on CPU.
 
-## Scaffolded (v0 — NOT yet verified)
+## Scaffolded / partial (v0)
 - **Phase 2** — `distill-paper`, `repro-harness`, `graft-change` skill runbooks
-  (`agent-skill/`) and the `SkyPilotAdapter` scaffold
-  (`src/talos/adapters/skypilot.py`). Runbooks are reviewable; their end-to-end
-  behavior is unverified (they depend on a real codebase / evaluator / cloud).
+  (`agent-skill/`) and `SkyPilotAdapter` (`src/talos/adapters/skypilot.py`).
+  The adapter's SSH task generation and result parsing are CPU-tested; SkyPilot
+  packaging is available through the optional `sky` dependency group; real
+  SkyPilot infrastructure execution is still unverified.
 - **Phase 3** — `escalate` and `attribute` skill runbooks (`agent-skill/`) and a
   parallel/factorial-grid orchestration scaffold (`src/talos/orchestration.py`;
   `factorial_grid` is a real helper, `run_grid` is an unverified scaffold).
 
 ## Not yet runnable here
-- The GPU reference demo (`examples/nanochat/`) — needs a GPU.
+- The GPU reference demo (`examples/nanochat/`) — short local RTX 3090 smoke is
+  recorded; overnight release evidence is still missing.
 - Production domain evaluators — each sub-team writes its own under `constraints/`.
 
 ## Git / ledger scope
