@@ -6,21 +6,22 @@ it should not copy raw experiment history into the Talos control repo.
 
 ## Current state
 
-- CPU minimal demo: verified by the normal local checks in [`../../STATUS.md`](../../STATUS.md).
-- GPU nanochat local: runbook implemented in [`../../examples/nanochat/`](../../examples/nanochat/);
-  short smoke completed on an RTX 3090 on 2026-07-02 in
-  `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`. Baseline `val_bpb=1.16269`;
-  scripted candidate `DEPTH 4 -> 3` produced `val_bpb=1.182209` and was reverted.
-  Overnight/improvement evidence is still missing.
-- SkyPilot SSH GPU: `SkyPilotAdapter` task generation/result parsing and the SSH
-  smoke runbook are implemented; the SkyPilot CLI is available as the optional
-  `sky` dependency group and `uv run --group sky sky --version` reports
-  `0.12.3.post1`; no current SSH-pool launch evidence recorded in this repo.
-- SkyPilot local Kubernetes smoke: optional; no current evidence recorded in this
-  repo.
+| Gate | Current evidence | Status |
+| --- | --- | --- |
+| CPU minimal demo | Normal local checks in [`../../STATUS.md`](../../STATUS.md). | Passing |
+| GPU nanochat local short smoke | RTX 3090 run on 2026-07-02 in `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`; baseline `val_bpb=1.16269`; scripted candidate `DEPTH 4 -> 3` produced `val_bpb=1.182209` and was reverted. | Passing as a short smoke |
+| GPU nanochat overnight/improvement | No overnight ledger yet. | Missing |
+| SkyPilot SSH GPU | API server is healthy and the same-host SSH pool config was created, but `sky ssh up --infra rtx3090` is blocked by non-interactive sudo on localhost. | Blocked |
+| SkyPilot local Kubernetes smoke | Optional; no current evidence recorded in this repo. | Not run |
 
 Until the GPU rows above link to current target worktree evidence, Talos is not
 release-ready for an external GPU demo.
+
+## Review artifacts
+
+- Short-smoke visual summary: [`assets/rtx3090-short-smoke.svg`](./assets/rtx3090-short-smoke.svg)
+- Target ledger: `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch/results.tsv`
+- Candidate artifact: `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch/.talos/runs/exp-0001/`
 
 ## 2026-07-02 RTX 3090 local nanochat smoke
 
@@ -52,6 +53,35 @@ release-ready for an external GPU demo.
   evaluator on RTX 3090-class hardware. It also proves the optional SkyPilot CLI
   dependency group installs. It does not satisfy the overnight release gate or
   the SkyPilot SSH GPU gate.
+
+## 2026-07-02 same-host SkyPilot SSH attempt
+
+- Talos commit under test: `c0ed4aa` plus this evidence update.
+- SkyPilot packaging: `uv sync --group sky` installs the CLI; `uv run --group sky
+  sky --version` reports `skypilot, version 0.12.3.post1`.
+- API server: `uv run --group sky sky api start` started a local server at
+  `http://127.0.0.1:46580`; `uv run --group sky sky api info` reports
+  `ApiServerStatus.HEALTHY`.
+- SSH pool config: `~/.sky/ssh_node_pools.yaml` now contains pool `rtx3090`
+  pointing to `localhost`, user `mi`, key `/home/mi/.ssh/id_rsa`.
+- Local prerequisites verified: SSH to localhost with that key succeeds;
+  `nvidia-smi` over SSH reports `NVIDIA GeForce RTX 3090, 24576 MiB`; `jq` and
+  user-local `kubectl v1.36.2` are available.
+- Generated task: `uv run --group sky python
+  examples/nanochat/skypilot_ssh_smoke.py --pool rtx3090 --accelerators
+  RTX3090:1 --print-yaml` emits `infra: ssh/rtx3090` and
+  `accelerators: RTX3090:1`.
+- Actual launch attempt: `uv run --group sky sky ssh up --infra rtx3090`.
+- Result: blocked before cluster creation. SSH connection to `localhost`
+  succeeded, then SkyPilot's bootstrap command failed at `sudo sshd -T` /
+  `sudo sed ... /etc/ssh/sshd_config` because sudo requires an interactive
+  password: `sudo: a terminal is required to read the password` and
+  `sudo: a password is required`.
+- Reviewer notes: this resolves the earlier "No SkyPilot API server is
+  connected" issue but does not satisfy the SkyPilot SSH GPU gate. Continuing
+  requires either passwordless sudo for the local user on this machine or a
+  password-bearing SSH Node Pool config, then rerunning `sky ssh up --infra
+  rtx3090` before launching the nanochat SkyPilot smoke.
 
 ## Evidence template
 

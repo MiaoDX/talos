@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" role="img" aria-labelledby="title desc">
+  <title id="title">RTX 3090 short nanochat smoke</title>
+  <desc id="desc">Baseline validation BPB was 1.16269. Candidate depth four to three was worse at 1.182209 and was reverted.</desc>
+  <rect width="720" height="360" fill="#ffffff"/>
+  <line x1="80" y1="300" x2="660" y2="300" stroke="#202124" stroke-width="1.5"/>
+  <line x1="80" y1="48" x2="80" y2="300" stroke="#202124" stroke-width="1.5"/>
+  <text x="370" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#202124">Experiment</text>
+  <text x="24" y="175" text-anchor="middle" transform="rotate(-90 24 175)" font-family="Arial, sans-serif" font-size="15" fill="#202124">Validation BPB (lower is better)</text>
+  <text x="80" y="28" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#202124">RTX 3090 short smoke: candidate reverted</text>
+  <text x="80" y="52" font-family="Arial, sans-serif" font-size="13" fill="#5f6368">300s train budget per run; evidence from /tmp/talos_nanochat_gpu_UzMZRz/autoresearch/results.tsv</text>
+
+  <line x1="80" y1="260" x2="660" y2="260" stroke="#dadce0"/>
+  <line x1="80" y1="196" x2="660" y2="196" stroke="#dadce0"/>
+  <line x1="80" y1="132" x2="660" y2="132" stroke="#dadce0"/>
+  <line x1="80" y1="68" x2="660" y2="68" stroke="#dadce0"/>
+  <text x="70" y="265" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#5f6368">1.160</text>
+  <text x="70" y="201" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#5f6368">1.170</text>
+  <text x="70" y="137" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#5f6368">1.180</text>
+  <text x="70" y="73" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#5f6368">1.190</text>
+
+  <line x1="180" y1="242.8" x2="500" y2="117.9" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="6 6"/>
+  <circle cx="180" cy="242.8" r="8" fill="#188038"/>
+  <circle cx="500" cy="117.9" r="8" fill="#d93025"/>
+  <text x="180" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">baseline</text>
+  <text x="500" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">candidate</text>
+  <text x="180" y="226" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#188038">1.16269</text>
+  <text x="500" y="101" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#d93025">1.182209</text>
+  <text x="500" y="77" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#d93025">reverted</text>
+  <text x="340" y="154" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6368">DEPTH 4 -> 3 increased BPB</text>
+</svg>
