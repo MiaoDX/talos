@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import subprocess
 from dataclasses import asdict, dataclass
+from itertools import islice
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -90,6 +91,30 @@ def _changed_paths(workdir: Path) -> set[str]:
     return paths
 
 
+def _untracked_paths(workdir: Path) -> set[str]:
+    paths: set[str] = set()
+    for line in _git(workdir, "status", "--porcelain").stdout.splitlines():
+        if line.startswith("?? "):
+            path = line[3:].strip()
+            if path:
+                paths.add(path)
+    return paths
+
+
+def _clean_untracked(workdir: Path, paths: set[str]):
+    """Remove only the untracked paths created by this experiment attempt."""
+    for path in sorted(paths):
+        if not path or path.startswith(".git/"):
+            continue
+        _git(workdir, "clean", "-fd", "--", path)
+
+
+def _candidate_patch(workdir: Path, base: str, untracked_paths: set[str]) -> str:
+    if untracked_paths:
+        _git(workdir, "add", "-N", "--", *sorted(untracked_paths))
+    return _git(workdir, "diff", "--binary", base).stdout
+
+
 def _matches(path: str, roots: set[str]) -> bool:
     path = path.strip("/")
     return any(path == root or path.startswith(root.rstrip("/") + "/") for root in roots)
@@ -121,8 +146,10 @@ def _save_artifact(workdir: Path, artifact_root: Optional[Path], run_id: str, *,
     return _rel_path(run_dir, workdir)
 
 
-def _reset_to(workdir: Path, sha: str):
+def _reset_to(workdir: Path, sha: str, *, clean_paths: Optional[set[str]] = None):
     _git(workdir, "reset", "--hard", "-q", sha)
+    if clean_paths:
+        _clean_untracked(workdir, clean_paths)
 
 
 def _veto_dicts(result: Optional[EvalResult]):
@@ -142,7 +169,8 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
                 lower_is_better: Optional[bool] = None,
                 editable_paths: Optional[list[str]] = None,
                 protected_paths: Optional[list[str]] = None,
-                artifact_dir: Optional[str | Path] = None):
+                artifact_dir: Optional[str | Path] = None,
+                max_iterations: Optional[int] = 25):
     workdir = Path(workdir)
     adapter = adapter or LocalAdapter()
     ledger = ledger or TSVLedger(workdir / "results.tsv")
@@ -158,10 +186,21 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
     if evaluator_rel:
         protected.add(evaluator_rel.strip("/"))
     editable = {p.strip("/") for p in editable_paths} if editable_paths is not None else None
+    if max_iterations is not None and max_iterations < 1:
+        raise ValueError("max_iterations must be >= 1 or None")
+
+    dirty = _changed_paths(workdir)
+    if dirty:
+        raise RuntimeError(
+            "run_ratchet requires a clean experiment worktree; dirty paths: "
+            + ", ".join(sorted(dirty)[:10]))
 
     baseline_sha = _head(workdir)
     evaluator_sha = _blob_sha(workdir, evaluator_rel)
+    baseline_untracked = _untracked_paths(workdir)
     base = adapter.run(evaluator, workdir)
+    _reset_to(workdir, baseline_sha,
+              clean_paths=_untracked_paths(workdir) - baseline_untracked)
     direction = base.lower_is_better if lower_is_better is None else lower_is_better
     if base.lower_is_better != direction:
         base = _with_veto(
@@ -176,9 +215,11 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
                   seeds=base.seeds, vetoes=_veto_dicts(base), metrics=base.metrics)
     history = [{"experiment": "baseline", "result": base, "status": "baseline"}]
 
-    for i, p in enumerate(proposals, 1):
+    proposal_iter = proposals if max_iterations is None else islice(proposals, max_iterations)
+    for i, p in enumerate(proposal_iter, 1):
         run_id = f"exp-{i:04d}"
         pre_head = _head(workdir)
+        pre_existing_untracked = _untracked_paths(workdir)
         candidate_sha = ""
         patch = ""
         res: Optional[EvalResult] = None
@@ -195,10 +236,11 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
                 continue
             violation = _policy_violation(changed, editable_paths=editable, protected_paths=protected)
             if violation:
-                patch = _git(workdir, "diff", "--binary", "HEAD").stdout
+                clean_paths = _untracked_paths(workdir) - pre_existing_untracked
+                patch = _candidate_patch(workdir, "HEAD", clean_paths)
                 artifact_ref = _save_artifact(workdir, artifact_root, run_id,
                                               patch=patch, error=violation)
-                _reset_to(workdir, pre_head)
+                _reset_to(workdir, pre_head, clean_paths=clean_paths)
                 ledger.append(i, pre_head, None, None, "policy_violation",
                               f"{p.description} [{violation}]",
                               baseline_commit=pre_head, evaluator=evaluator_rel,
@@ -218,12 +260,15 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
                     f"candidate emitted lower_is_better={res.lower_is_better}, expected {direction}")
             artifact_ref = _save_artifact(workdir, artifact_root, run_id,
                                           patch=patch, result=res)
+            post_eval_untracked = _untracked_paths(workdir) - pre_existing_untracked
             if is_improvement(res, best, direction):
                 delta = res.scalar - best
                 best = res.scalar
                 status = "keep"
+                _reset_to(workdir, candidate_sha, clean_paths=post_eval_untracked)
             else:
-                _reset_to(workdir, pre_head)   # revert the candidate commit
+                # Revert the candidate commit and any evaluator side effects.
+                _reset_to(workdir, pre_head, clean_paths=post_eval_untracked)
                 delta = None
                 status = "veto" if res.vetoed else "revert"
             ledger.append(i, candidate_sha, res.scalar, delta, status, p.description,
@@ -234,9 +279,10 @@ def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
             history.append({"experiment": i, "result": res, "status": status})
         except Exception as e:
             try:
+                clean_paths = _untracked_paths(workdir) - pre_existing_untracked
                 if not patch:
-                    patch = _git(workdir, "diff", "--binary", pre_head).stdout
-                _reset_to(workdir, pre_head)
+                    patch = _candidate_patch(workdir, pre_head, clean_paths)
+                _reset_to(workdir, pre_head, clean_paths=clean_paths)
             except Exception:
                 pass
             artifact_ref = _save_artifact(workdir, artifact_root, run_id,

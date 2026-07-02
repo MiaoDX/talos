@@ -74,6 +74,13 @@ status, description`, plus seeds and resource usage. It is simultaneously the
 
 See [`docs/survey/experiment-ledger.md`](./docs/survey/experiment-ledger.md).
 
+**Scope boundary.** The git+TSV ledger is for the target experiment worktree,
+not for the Talos control repo itself. Talos stays small: it ships the method,
+reference engine, runbooks, tests, and demos. A real run passes an isolated
+target repo/worktree to `run_ratchet`; that target branch stores kept experiment
+commits, while its ledger and `.talos/runs/` artifacts store raw experiment
+facts.
+
 ## L2 — Eval contract (the moat)
 
 A frozen scorer that nobody edits during a lineage, exposing **one scalar**
@@ -116,7 +123,7 @@ A single `ratchet-experiment` step:
 
 ```
 read ledger (L1) + program/spec
-  → propose a change, edit code (L3, via the coding agent on the existing repo)
+  → propose a change, edit code (L3, via the coding agent on the target repo)
   → submit experiment with a fixed budget (L0 adapter: local or skypilot)
   → score with the frozen evaluator + vetoes (L2)
   → keep (git commit) or revert (git reset); append to ledger (L1)

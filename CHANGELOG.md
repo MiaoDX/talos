@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Ratchet hardening and scope clarity** — `run_ratchet` now enforces a default
+  iteration cap, requires a clean experiment worktree, cleans only untracked files
+  created by failed/reverted attempts, preserves patches for untracked candidate
+  files, and documents that experiment git/ledger state belongs in the target
+  worktree rather than the Talos control repo.
 - **Ledger/audit model hardening** — ADR 0001 separates git (kept code lineage),
   append-only ledger (raw experiment facts), and docs (human decisions/summaries).
   The ratchet now records richer ledger metadata, preserves per-run patches/results

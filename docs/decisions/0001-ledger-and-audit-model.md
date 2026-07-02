@@ -10,6 +10,11 @@ candidate, evaluate it, keep the commit only if the frozen metric improves, and
 reset otherwise. That is not the same thing as using git as the experiment
 database.
 
+The git repository in this model is the **target experiment repo/worktree**. The
+Talos repository itself is a control repo that should remain small: it contains
+the method, reference engine, runbooks, docs, tests, and demos, not production
+experiment history.
+
 A reverted candidate disappears from the kept lineage, but failed experiments are
 still research signal. They prevent the agent from repeating known-bad changes,
 show which vetoes fired, and give humans an audit trail for claims about the
@@ -22,7 +27,8 @@ Talos separates the audit model into three layers:
 
 1. **Git stores code state and rollback.** The kept branch should contain only the
    current validated lineage. Optional experiment refs may preserve reverted
-   candidate commits, but the main branch is not the run database.
+   candidate commits, but the main branch is not the run database. For real
+   experiments, this branch lives in the target repo/worktree passed to Talos.
 2. **The append-only ledger stores every experiment fact.** Every baseline,
    keep, revert, veto, crash, policy violation, and no-change attempt gets a row.
    The ledger records commit IDs, metric/delta, status, evaluator identity,
@@ -41,6 +47,9 @@ adapter can implement the same contract without changing the ratchet semantics.
 - Per-run artifacts live under `.talos/runs/<run_id>/` by default and are also
   excluded from the candidate commit. Each run should preserve the candidate patch
   and, when available, the raw evaluator result or error text.
+- The experiment worktree must be clean before a ratchet run starts. Failed,
+  vetoed, or policy-violating attempts reset to the pre-experiment commit and
+  remove only untracked files created by that attempt.
 - The evaluator, `program.md`, and any configured protected paths are checked
   before commit. Changing one is a `policy_violation`, not an experiment.
 - If `editable_paths` is configured, changes outside that sandbox are rejected

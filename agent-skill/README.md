@@ -19,6 +19,9 @@ codebase / evaluator); they will be hardened once a domain Phase-0 evaluator exi
 
 ## Conventions (see ../AGENTS.md)
 - Bounded autonomy: default iteration cap + time/compute budget.
-- Crash recovery: fix a few times, else revert and log `status=crash`.
+- Git/ledger state belongs in the target experiment worktree, not the Talos
+  control repo except when developing Talos itself.
+- Crash recovery: production agent loops fix a few times; the reference engine
+  resets and logs `status=crash`.
 - Git-as-memory; three-state self-assessment (keep / discard / crash).
 - Keep `SKILL.md` bodies short; push detail to `references/`.

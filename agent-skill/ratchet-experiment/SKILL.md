@@ -20,7 +20,9 @@ is the raw experiment memory and the git log is the kept-code lineage.
   contract-conformant JSON line: `{"scalar", "vetoes", "metrics", "seeds",
   "lower_is_better"}` (see `src/talos/contract.py`). You must **never** edit it.
 - **A git repo on a dedicated branch** (e.g. `autoresearch/<task>`), with the
-  agent-editable sandbox file(s) identified (the analog of `train.py`).
+  agent-editable sandbox file(s) identified (the analog of `train.py`). This is
+  the target experiment repo/worktree, not the Talos control repo unless you are
+  developing Talos itself.
 - **Protected paths.** The evaluator, `program.md`, data, and metric files are out
   of scope. A change to one of them is a policy violation, not an experiment.
 - **A budget:** a per-experiment time/compute budget *and* an iteration cap.
@@ -44,6 +46,11 @@ is the raw experiment memory and the git log is the kept-code lineage.
 
 Repeat until the iteration cap is hit or improvements stall.
 
+The reference engine enforces a default `max_iterations=25` and requires a clean
+experiment worktree before starting. It records crashes as `status=crash`, resets
+to the pre-experiment commit, and cleans untracked files created by the failed
+attempt. Production agent loops can wrap the engine with a repair/retry policy.
+
 ## Rules (see ../../AGENTS.md)
 - The evaluator, metric, and data are **immutable**. If you want to change the
   yardstick, stop — that is a separate, human-reviewed change.
@@ -55,7 +62,8 @@ Repeat until the iteration cap is hit or improvements stall.
 - **Safety-critical paths** are candidate evidence only — flag for human review,
   don't merge autonomously.
 - **Ledger first:** git stores the kept code lineage; the append-only ledger stores
-  the factual run history, including failed/reverted attempts.
+  the factual run history, including failed/reverted attempts. Both belong to the
+  target experiment worktree.
 
 ## Reference implementation
 - Engine: [`../../src/talos/ratchet.py`](../../src/talos/ratchet.py) (`run_ratchet`).
