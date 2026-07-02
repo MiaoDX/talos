@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="640" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc">
+  <title id="title">Talos Extensible AutoResearch Architecture</title>
+  <desc id="desc">A layered architecture diagram showing agent skills, eval contract, ledger, execution adapters, target worktree, and extension points.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7fafc"/>
+      <stop offset="55%" stop-color="#eef7f3"/>
+      <stop offset="100%" stop-color="#f8f1e7"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#233348"/>
+      <stop offset="100%" stop-color="#36556f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1b8a6b"/>
+      <stop offset="100%" stop-color="#d18b34"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#102033" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#486174"/>
+    </marker>
+    <style>
+      svg { max-width: 100%; height: auto; }
+      .title { font: 700 34px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172334; }
+      .subtitle { font: 500 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #536575; }
+      .label { font: 700 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172334; }
+      .small { font: 500 12px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #536575; }
+      .coreLabel { font: 700 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ffffff; }
+      .coreSmall { font: 500 12px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #d8e4ed; }
+      .pill { fill: #ffffff; stroke: #d9e3e8; stroke-width: 1.2; }
+      .plugin { fill: #fffdf9; stroke: #ead8be; stroke-width: 1.2; }
+      .line { stroke: #486174; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .softLine { stroke: #9eb0bb; stroke-width: 1.5; stroke-dasharray: 6 6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1120" height="640" fill="url(#bg)"/>
+  <text x="56" y="64" class="title">Talos: small core, pluggable AutoResearch harness</text>
+  <text x="58" y="92" class="subtitle">Executor taught the pattern; Talos keeps the public core narrow and moves platform detail behind contracts.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="122" width="420" height="382" rx="18" fill="url(#core)"/>
+  </g>
+  <text x="382" y="158" class="coreLabel">Talos core contracts</text>
+  <text x="382" y="181" class="coreSmall">portable method layer, not a platform</text>
+
+  <g>
+    <rect x="386" y="212" width="348" height="58" rx="10" fill="#ffffff" opacity="0.96"/>
+    <text x="410" y="238" class="label">L3 Agent skills</text>
+    <text x="410" y="257" class="small">distill -> repro -> graft -> ratchet</text>
+
+    <rect x="386" y="292" width="348" height="58" rx="10" fill="#ffffff" opacity="0.96"/>
+    <text x="410" y="318" class="label">L2 Eval contract</text>
+    <text x="410" y="337" class="small">frozen scalar + hard vetoes</text>
+
+    <rect x="386" y="372" width="348" height="58" rx="10" fill="#ffffff" opacity="0.96"/>
+    <text x="410" y="398" class="label">L1 Ledger contract</text>
+    <text x="410" y="417" class="small">append-only facts + artifacts</text>
+
+    <rect x="386" y="452" width="348" height="58" rx="10" fill="#ffffff" opacity="0.96"/>
+    <text x="410" y="478" class="label">L0 ExecutionAdapter</text>
+    <text x="410" y="497" class="small">run evaluator in a target worktree</text>
+  </g>
+
+  <g>
+    <rect x="52" y="164" width="235" height="82" rx="14" class="pill"/>
+    <text x="78" y="195" class="label">Target worktree</text>
+    <text x="78" y="216" class="small">the code being improved</text>
+    <text x="78" y="235" class="small">kept lineage lives here</text>
+
+    <rect x="52" y="282" width="235" height="82" rx="14" class="pill"/>
+    <text x="78" y="313" class="label">Frozen evaluator</text>
+    <text x="78" y="334" class="small">domain metric + data owner</text>
+    <text x="78" y="353" class="small">never edited mid-lineage</text>
+
+    <rect x="52" y="400" width="235" height="82" rx="14" class="pill"/>
+    <text x="78" y="431" class="label">Run artifacts</text>
+    <text x="78" y="452" class="small">patches, result JSON, errors</text>
+    <text x="78" y="471" class="small">ledger references them</text>
+  </g>
+
+  <g>
+    <rect x="834" y="134" width="230" height="74" rx="14" class="plugin"/>
+    <text x="858" y="165" class="label">Compute backends</text>
+    <text x="858" y="186" class="small">local, SkyPilot, Executor, Slurm</text>
+
+    <rect x="834" y="242" width="230" height="74" rx="14" class="plugin"/>
+    <text x="858" y="273" class="label">Domain evaluators</text>
+    <text x="858" y="294" class="small">driving, robotics, ML, custom</text>
+
+    <rect x="834" y="350" width="230" height="74" rx="14" class="plugin"/>
+    <text x="858" y="381" class="label">Trackers</text>
+    <text x="858" y="402" class="small">TSV, JSONL, MLflow, internal</text>
+
+    <rect x="834" y="458" width="230" height="74" rx="14" class="plugin"/>
+    <text x="858" y="489" class="label">Search strategies</text>
+    <text x="858" y="510" class="small">ratchet, grid, tree, evolution</text>
+  </g>
+
+  <path class="line" d="M 287 205 C 326 205, 331 234, 379 241"/>
+  <path class="line" d="M 287 323 C 326 323, 331 321, 379 321"/>
+  <path class="line" d="M 287 441 C 326 441, 332 402, 379 402"/>
+
+  <path class="line" d="M 735 481 C 778 481, 786 171, 826 171"/>
+  <path class="line" d="M 735 321 C 780 321, 787 279, 826 279"/>
+  <path class="line" d="M 735 402 C 779 402, 788 387, 826 387"/>
+  <path class="line" d="M 735 241 C 780 241, 786 495, 826 495"/>
+
+  <path class="softLine" d="M 560 510 C 560 560, 250 560, 170 488"/>
+  <path class="softLine" d="M 560 212 C 560 126, 925 96, 949 130"/>
+
+  <rect x="348" y="548" width="424" height="46" rx="23" fill="url(#accent)" opacity="0.92"/>
+  <text x="398" y="577" class="coreLabel">Invariant: optimize only a frozen evaluator; keep only measured wins</text>
+</svg>

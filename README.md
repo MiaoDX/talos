@@ -100,6 +100,7 @@ specific domain's frozen evaluator**. See [`STATUS.md`](./STATUS.md) and
 - **Current orientation** — [`STATUS.md`](./STATUS.md),
   [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`ROADMAP.md`](./ROADMAP.md),
   [`docs/human/README.md`](./docs/human/README.md)
+- **Architecture lessons** — [`docs/human/executor-lessons.md`](./docs/human/executor-lessons.md)
 - **Concepts** — [`docs/concepts/paradigm.md`](./docs/concepts/paradigm.md),
   [`eval-first.md`](./docs/concepts/eval-first.md),
   [`workflow.md`](./docs/concepts/workflow.md)

@@ -10,6 +10,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "examples" / "ratchet_demo"))
 
+from talos.adapters import ExecutionAdapter       # noqa: E402
 from talos.adapters import LocalAdapter          # noqa: E402
 from talos.ledger import TSVLedger               # noqa: E402
 from talos.ratchet import Proposal, run_ratchet  # noqa: E402
@@ -41,6 +42,10 @@ def test_ratchet_keeps_reverts_and_improves():
     baseline_metric = float(rows[0]["metric"])
     assert out["best"] < baseline_metric, (out["best"], baseline_metric)
     assert out["best"] < 1.0, out["best"]   # the structural win is large
+
+
+def test_local_adapter_satisfies_execution_adapter_protocol():
+    assert isinstance(LocalAdapter(), ExecutionAdapter)
 
 
 def test_veto_row_has_no_metric():
@@ -228,6 +233,7 @@ def test_factorial_grid_is_stable_cartesian_product():
 
 if __name__ == "__main__":
     test_ratchet_keeps_reverts_and_improves()
+    test_local_adapter_satisfies_execution_adapter_protocol()
     test_veto_row_has_no_metric()
     test_ledger_records_artifacts_and_eval_metadata()
     test_policy_violation_reverts_protected_path_and_records_artifact()

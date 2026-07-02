@@ -11,9 +11,10 @@ import subprocess
 from pathlib import Path
 
 from ..contract import EvalResult, Veto
+from .base import ExecutionAdapter
 
 
-class LocalAdapter:
+class LocalAdapter(ExecutionAdapter):
     def __init__(self, budget_s: float = 300.0, python: str = "python3"):
         self.budget_s = budget_s
         self.python = python
