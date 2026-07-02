@@ -53,9 +53,12 @@ fetch(handle)           -> result      # { scalar, metrics, logs, artifact_ref }
   This is the single-GPU "run it overnight on my own box" path, mirroring
   `autoresearch`'s "just spin up your agent in this repo."
 - **`skypilot` adapter** — delegates to [SkyPilot](https://github.com/skypilot-org/skypilot)
-  for BYO-cloud / Kubernetes / Slurm, cost arbitrage, and queueing. China clouds
-  are reached via their managed Kubernetes (Alibaba ACK, Volcano Engine VKE) or a
-  custom SkyPilot plugin. We do **not** define a new cloud abstraction.
+  for BYO-cloud / Kubernetes / Slurm / existing-machine SSH pools, cost
+  arbitrage, and queueing. The first GPU integration path is an existing GPU
+  machine via SSH Node Pool; managed Kubernetes and cloud GPUs come after that.
+  China clouds are reached via their managed Kubernetes (Alibaba ACK, Volcano
+  Engine VKE) or a custom SkyPilot plugin. We do **not** define a new cloud
+  abstraction.
 - **`executor` adapter (future / case-study path)** — an internal operator repo can
   submit/fetch experiments through the same `ExecutionAdapter` shape. Its target
   graph, credentials, and platform-specific workflows stay outside Talos core.

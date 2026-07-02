@@ -6,9 +6,9 @@ v0 scaffolds, documented but not yet verified end-to-end.
 **Next:** See `ROADMAP.md`. The real Phase 0 for a production direction is
 building that domain's frozen closed-loop evaluator.
 
-**Blockers:** no current repository blocker for the CPU reference path. GPU
-demo, SkyPilot execution, and production domain evaluators need external
-hardware, cloud, or domain-specific evaluator work.
+**Blockers:** no current repository blocker for the CPU reference path. The
+release / external-demo gate still needs a real GPU nanochat run, SkyPilot SSH
+GPU execution, and any production domain evaluators.
 
 ## Supported local checks
 
@@ -17,6 +17,12 @@ uv sync
 uv run python examples/ratchet_demo/run_demo.py
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 ```
+
+See [`docs/human/testing-strategy.md`](./docs/human/testing-strategy.md) for the
+full standalone demo matrix. CPU checks are the default CI smoke path; the
+release / external-demo gate requires a real GPU nanochat run plus a SkyPilot SSH
+GPU smoke against an existing GPU machine. Current release evidence is indexed in
+[`docs/human/release-evidence.md`](./docs/human/release-evidence.md).
 
 Fresh clones or worktrees should enable the repo hook with
 `git config core.hooksPath .githooks` so `.venv` stays synced from `uv.lock`
