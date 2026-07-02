@@ -10,8 +10,10 @@ building that domain's frozen closed-loop evaluator.
 
 **Blockers:** no current repository blocker for the CPU reference path. The
 release / external-demo gate still needs overnight GPU nanochat evidence,
-SkyPilot SSH GPU execution against a configured SSH Node Pool, and any production
-domain evaluators.
+SkyPilot SSH GPU execution, and any production domain evaluators. The current
+same-host SkyPilot SSH attempt has a concrete environment blocker: `sky ssh up
+--infra rtx3090` can SSH to localhost, but fails during bootstrap because the
+local user does not have non-interactive sudo for SkyPilot's `sshd`/k3s setup.
 
 ## Supported local checks
 
