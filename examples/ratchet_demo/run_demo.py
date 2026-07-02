@@ -111,7 +111,7 @@ def setup_workdir() -> Path:
     work = Path(tempfile.mkdtemp(prefix="talos_ratchet_"))
     for f in ("evaluator.py", "solution.py", "program.md"):
         shutil.copy(TOY / f, work / f)
-    (work / ".gitignore").write_text("results.tsv\n")
+    (work / ".gitignore").write_text("results.tsv\n__pycache__/\n*.pyc\n.talos/\n")
     subprocess.run(["git", "init", "-q", "-b", "main"], cwd=work, check=True)
     subprocess.run(["git", "config", "user.email", "demo@talos"], cwd=work, check=True)
     subprocess.run(["git", "config", "user.name", "talos-demo"], cwd=work, check=True)

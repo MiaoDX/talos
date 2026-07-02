@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Ledger/audit model hardening** — ADR 0001 separates git (kept code lineage),
+  append-only ledger (raw experiment facts), and docs (human decisions/summaries).
+  The ratchet now records richer ledger metadata, preserves per-run patches/results
+  under `.talos/runs/`, enforces protected/editable path policy before commit, and
+  logs proposal failures as `crash` rows instead of leaving ambiguous worktree state.
 - **Phase 3 (v0, unverified)** — `escalate` (route safety-critical diffs to
   human review; switch search strategy on plateau) and `attribute` (ablation +
   multi-seed confirmation) skill runbooks, plus `src/talos/orchestration.py`
@@ -34,5 +39,5 @@ All notable changes to this project are documented here. The format is based on
 - Placeholder contracts: `constraints/` (L2 eval/veto contract) and
   `agent-skill/` (the four planned skills).
 
-> Talos is **pre-alpha**: the methodology and design are documented; the skills
-> and adapters are not yet implemented. See `STATUS.md` and `ROADMAP.md`.
+> Talos is **pre-alpha**: Phase 0–1 are implemented and CPU-verified; Phase 2–3
+> are reviewable v0 scaffolds. See `STATUS.md` and `ROADMAP.md`.

@@ -29,6 +29,10 @@ its evaluator and its guardrails. Violating them silently corrupts results.
    a result, fabricate a number, or report partial work as complete.
 5. **Results must be reproducible.** Fix and log seeds. Treat run-to-run noise as
    the significance bar — one lucky run is not an improvement.
+6. **Experiment facts live in the append-only ledger.** Git stores the kept code
+   lineage and rollback points; docs store decisions and summaries. A reverted or
+   failed experiment must still leave a factual ledger row and, when available, a
+   patch/artifact reference.
 
 ## Repository conventions
 
@@ -58,3 +62,6 @@ its evaluator and its guardrails. Violating them silently corrupts results.
   `status=crash` — do not stall waiting for a human.
 - Git-as-memory: read state + history + the ledger before each step.
 - Three-state self-assessment per experiment: **keep / discard / crash**.
+- Protected-path enforcement: the evaluator, metric/data files, and `program.md`
+  are checked before commit; a protected-path change is a policy violation, not an
+  experiment.
