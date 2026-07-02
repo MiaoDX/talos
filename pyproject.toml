@@ -18,6 +18,9 @@ where = ["src"]
 dev = [
     "pytest>=9.1.1",
 ]
+sky = [
+    "skypilot[kubernetes]>=0.12.3.post1",
+]
 
 [[tool.uv.index]]
 name = "pypi"
