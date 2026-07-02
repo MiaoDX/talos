@@ -17,7 +17,7 @@ def build_adapter(pool: str, accelerators: str, timeout_s: float) -> SkyPilotAda
         infra=f"ssh/{pool}",
         accelerators=accelerators,
         budget_s=timeout_s,
-        setup="uv sync",
+        setup="uv sync\nuv run prepare.py --num-shards 1 --download-workers 2",
         python="uv run python",
         cluster_name=f"talos-{pool}",
     )

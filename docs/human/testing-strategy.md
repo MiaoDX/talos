@@ -138,7 +138,8 @@ shared GPU boxes.
    target, then parse the same `EvalResult` JSON line as `LocalAdapter`.
    **Current status:** task generation and runner/result parsing implemented and
    test-covered; SkyPilot CLI packaging is available through `uv sync --group
-   sky`; actual SSH-pool launch evidence not yet recorded.
+   sky`; same-host RTX 3090 SSH-pool smoke evidence is recorded in
+   [`release-evidence.md`](./release-evidence.md).
 4. Implement the first nanochat proposals as scripted proposal functions, not
    free-form agent edits. This proves the evaluator, ledger, rollback, and
    adapter contracts before adding the risk and variance of live agent proposal

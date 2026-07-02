@@ -75,9 +75,9 @@ Four loosely-coupled, individually swappable layers (full detail in
 
 **Pre-alpha. Phase 0–1 are implemented and CPU-verified; Phase 2–3 are reviewable
 v0 surfaces.** A short local RTX 3090 nanochat smoke is recorded, and the
-SkyPilot task/result path is CPU-tested. Overnight GPU and real SkyPilot
-infrastructure evidence are not recorded yet. Talos is no longer
-documentation-only, but it is not yet a production platform.
+SkyPilot SSH path has a same-host RTX 3090 smoke. Overnight GPU improvement
+evidence is not recorded yet. Talos is no longer documentation-only, but it is
+not yet a production platform.
 
 Implemented and verified now:
 
@@ -87,11 +87,11 @@ Implemented and verified now:
   adapter, git+TSV append-only ledger, `ratchet-experiment` skill, runnable CPU
   demo, clean-worktree safeguards, a default iteration cap, and end-to-end tests.
 
-Scaffolded but not yet verified end-to-end:
+Scaffolded / partially verified:
 
 - **Phase 2:** `distill-paper`, `repro-harness`, `graft-change`, and the
-  `SkyPilotAdapter` task/result path. Real SkyPilot infrastructure proof is not
-  recorded yet.
+  `SkyPilotAdapter` task/result path. The SSH GPU smoke is recorded; broader
+  Kubernetes/cloud execution remains manual/future evidence.
 - **Phase 3:** `escalate`, `attribute`, and parallel/grid orchestration scaffolds.
 
 The first real milestone for any production direction remains **building that

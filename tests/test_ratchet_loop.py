@@ -273,7 +273,9 @@ def test_skypilot_adapter_generates_ssh_node_pool_task_yaml():
 
 def test_nanochat_skypilot_helpers_generate_manual_task_shapes():
     ssh = skypilot_ssh_smoke.build_adapter("rtx3090", "RTX3090:1", 10)
-    assert "infra: ssh/rtx3090" in ssh.task_yaml("talos_nanochat_evaluator.py")
+    ssh_yaml = ssh.task_yaml("talos_nanochat_evaluator.py")
+    assert "infra: ssh/rtx3090" in ssh_yaml
+    assert "setup: |\n  uv sync\n  uv run prepare.py --num-shards 1 --download-workers 2\nrun: |" in ssh_yaml
     local_k8s = skypilot_local_k8s_smoke.build_adapter(None, 10)
     yaml = local_k8s.task_yaml("talos_nanochat_evaluator.py")
     assert "infra: k8s" in yaml
@@ -309,6 +311,26 @@ def test_skypilot_adapter_parses_evalresult_from_runner(monkeypatch, tmp_path):
         12,
     )
     assert not (tmp_path / ".talos-skypilot-task.yaml").exists()
+
+
+def test_skypilot_adapter_finds_json_before_trailing_sky_status(monkeypatch, tmp_path):
+    monkeypatch.setattr("talos.adapters.skypilot.shutil.which", lambda _: "/usr/bin/sky")
+
+    def runner(cmd, cwd, timeout):
+        return subprocess.CompletedProcess(
+            cmd, 0,
+            stdout=(
+                "\x1b[36m(task)\x1b[0m "
+                '{"scalar":0.5,"vetoes":[],"metrics":{"val_bpb":0.5},'
+                '"seeds":[],"lower_is_better":true}\n'
+                "\x1b[32m✓ Job finished (status: SUCCEEDED).\x1b[0m\n"
+            ),
+            stderr="",
+        )
+
+    result = SkyPilotAdapter(runner=runner).run("evaluator.py", tmp_path)
+    assert result.scalar == 0.5
+    assert result.metrics == {"val_bpb": 0.5}
 
 
 def test_skypilot_adapter_maps_missing_cli_to_veto(monkeypatch, tmp_path):
