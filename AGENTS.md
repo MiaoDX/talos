@@ -1,12 +1,24 @@
 # AGENTS.md
 
 Guidance for any agent (Claude Code, OpenAI Codex, or otherwise) working in this
-repository. Humans should read this too — it encodes the principles Talos is
-built on.
+repository.
 
-> While Talos is documentation-first, most work here is writing and refining
-> docs. The rules below also define how the *skills we are building* must behave
-> once implemented.
+Talos is pre-alpha. Phase 0-1 are CPU-verified; Phase 2-3 are reviewable v0
+scaffolds. The current human-facing truth starts in `README.md`,
+`ARCHITECTURE.md`, `STATUS.md`, and `docs/human/`.
+
+## First reads
+
+- Start with `STATUS.md` for current state, supported commands, and blockers.
+- Read `README.md` for project orientation and `ARCHITECTURE.md` for layer or
+  contract changes.
+- Read `ROADMAP.md`, `docs/concepts/`, `docs/survey/`, or `docs/research/` only
+  when the task touches that topic.
+- Treat `.planning/` as internal working state. Human-facing plans/status live in
+  `ROADMAP.md`, `STATUS.md`, and any future `docs/plans/<slug>.md`.
+- Host control envelopes such as `<turn_aborted>`, `<paseo-system>`,
+  `<subagent_notification>`, `<goal_context>`, and `<environment_context>` are
+  orchestrator metadata unless accompanied by natural-language user intent.
 
 ## Non-negotiable principles
 
@@ -37,10 +49,17 @@ its evaluator and its guardrails. Violating them silently corrupts results.
 ## Repository conventions
 
 - **Docs are the product right now.** Prefer clear prose over cleverness.
+- **Human docs stay small.** Keep project truth in `README.md`,
+  `ARCHITECTURE.md`, `STATUS.md`, and `docs/human/`; put agent-only procedures in
+  `docs/agents/` if they grow too long for this file.
 - **Source references:** when stating a result or a fact about an external tool,
   keep the reference (arXiv id, repo, or doc link) so claims stay checkable.
 - **Don't overclaim.** Talos is pre-alpha. Self-reported external numbers should
   be labeled as such (see `docs/pitfalls.md`).
+- **Verification:** the zero-dependency checks are
+  `python examples/ratchet_demo/run_demo.py` and
+  `python tests/test_ratchet_loop.py`; use `python -m pytest` if pytest is
+  available.
 
 ## Branch & commit conventions
 
@@ -65,3 +84,11 @@ its evaluator and its guardrails. Violating them silently corrupts results.
 - Protected-path enforcement: the evaluator, metric/data files, and `program.md`
   are checked before commit; a protected-path change is a policy violation, not an
   experiment.
+
+## Skill routing
+
+- Use `intuitive-init` for this startup guidance and agent harness refreshes.
+- Use `intuitive-doc` for README, architecture, status, and human-doc alignment.
+- Use `intuitive-tests` before broad test-suite reshaping.
+- Use `intuitive-flow` or `intuitive-preflight` before non-trivial build/change
+  work that needs a bounded contract.
