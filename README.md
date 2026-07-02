@@ -68,11 +68,27 @@ Four loosely-coupled, individually swappable layers (full detail in
 
 ## Status
 
-**Pre-alpha — documentation-first.** The thinking and design are here; the
-skills and adapters are not yet implemented. We are publishing the architecture
-before the code so it can be reviewed in the open. See [`STATUS.md`](./STATUS.md)
-and [`ROADMAP.md`](./ROADMAP.md). The first milestone is **building an
-evaluator**, not writing a skill.
+**Pre-alpha. Phase 0–1 are implemented and CPU-verified; Phase 2–3 are reviewable
+v0 scaffolds.** Talos is no longer documentation-only, but it is not yet a
+production platform.
+
+Implemented and verified now:
+
+- **Phase 0:** L2 eval contract (`src/talos/contract.py`) plus the pure-Python
+  `toy_mlp` reference evaluator under `constraints/examples/toy_mlp/`.
+- **Phase 1:** the keep/revert ratchet (`src/talos/ratchet.py`), local subprocess
+  adapter, git+TSV append-only ledger, `ratchet-experiment` skill, runnable CPU
+  demo, and end-to-end tests.
+
+Scaffolded but not yet verified end-to-end:
+
+- **Phase 2:** `distill-paper`, `repro-harness`, `graft-change`, and the
+  `SkyPilotAdapter` scaffold.
+- **Phase 3:** `escalate`, `attribute`, and parallel/grid orchestration scaffolds.
+
+The first real milestone for any production direction remains **building that
+specific domain's frozen evaluator**. See [`STATUS.md`](./STATUS.md) and
+[`ROADMAP.md`](./ROADMAP.md).
 
 ## Documentation
 

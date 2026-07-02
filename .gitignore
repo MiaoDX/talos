@@ -11,6 +11,7 @@ venv/
 .python-version
 
 # Experiment scratch (the ledger TSV is illustrative; keep real ledgers out of git by default)
+.talos/
 runs/
 scratch/
 *.log
