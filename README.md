@@ -115,14 +115,20 @@ specific domain's frozen evaluator**. See [`STATUS.md`](./STATUS.md) and
 
 ## Run locally
 
-The reference core has no third-party runtime dependencies.
+Talos is managed with [uv](https://docs.astral.sh/uv/). The reference runtime is
+still zero-dependency, but the locked dev environment includes pytest.
 
 ```bash
-python examples/ratchet_demo/run_demo.py
-python tests/test_ratchet_loop.py
+uv sync
+uv run python examples/ratchet_demo/run_demo.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 ```
 
-Use `python -m pytest` when pytest is available.
+For fresh clones or git worktrees, enable the checked-in environment hook once:
+
+```bash
+git config core.hooksPath .githooks
+```
 
 ## Acknowledgements
 

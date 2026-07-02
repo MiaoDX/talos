@@ -13,11 +13,14 @@ hardware, cloud, or domain-specific evaluator work.
 ## Supported local checks
 
 ```bash
-python examples/ratchet_demo/run_demo.py
-python tests/test_ratchet_loop.py
+uv sync
+uv run python examples/ratchet_demo/run_demo.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 ```
 
-Use `python -m pytest` when pytest is available.
+Fresh clones or worktrees should enable the repo hook with
+`git config core.hooksPath .githooks` so `.venv` stays synced from `uv.lock`
+after checkout.
 
 ## Implemented & verified
 - **Phase 0** — L2 eval contract (`src/talos/contract.py`) + a frozen, pure-Python

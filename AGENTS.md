@@ -56,10 +56,13 @@ its evaluator and its guardrails. Violating them silently corrupts results.
   keep the reference (arXiv id, repo, or doc link) so claims stay checkable.
 - **Don't overclaim.** Talos is pre-alpha. Self-reported external numbers should
   be labeled as such (see `docs/pitfalls.md`).
-- **Verification:** the zero-dependency checks are
-  `python examples/ratchet_demo/run_demo.py` and
-  `python tests/test_ratchet_loop.py`; use `python -m pytest` if pytest is
-  available.
+- **Environment:** this repo is uv-managed. Run `uv sync` before development.
+  In fresh clones or worktrees, enable the repo hook with
+  `git config core.hooksPath .githooks`; it keeps `.venv` synced from
+  `uv.lock` after checkout. Set `TALOS_SKIP_UV_SYNC=1` to skip the hook.
+- **Verification:** run
+  `uv run python examples/ratchet_demo/run_demo.py` and
+  `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest`.
 
 ## Branch & commit conventions
 
