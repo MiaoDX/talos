@@ -12,6 +12,7 @@ is testable without an LLM.
 from __future__ import annotations
 
 import subprocess
+import hashlib
 from dataclasses import asdict, dataclass
 from itertools import islice
 from pathlib import Path
@@ -51,13 +52,19 @@ def _evaluator_rel(evaluator: str, workdir: Path) -> str:
         try:
             return path.resolve().relative_to(workdir.resolve()).as_posix()
         except ValueError:
-            return ""
+            return path.resolve().as_posix()
     return path.as_posix()
 
 
 def _blob_sha(workdir: Path, relpath: str) -> str:
     if not relpath:
         return ""
+    path = Path(relpath)
+    if path.is_absolute():
+        try:
+            return hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            return ""
     try:
         return _git(workdir, "rev-parse", f"HEAD:{relpath}").stdout.strip()
     except subprocess.CalledProcessError:

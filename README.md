@@ -74,8 +74,10 @@ Four loosely-coupled, individually swappable layers (full detail in
 ## Status
 
 **Pre-alpha. Phase 0–1 are implemented and CPU-verified; Phase 2–3 are reviewable
-v0 scaffolds.** Talos is no longer documentation-only, but it is not yet a
-production platform.
+v0 surfaces.** A short local RTX 3090 nanochat smoke is recorded, and the
+SkyPilot task/result path is CPU-tested. Overnight GPU and real SkyPilot
+infrastructure evidence are not recorded yet. Talos is no longer
+documentation-only, but it is not yet a production platform.
 
 Implemented and verified now:
 
@@ -88,7 +90,8 @@ Implemented and verified now:
 Scaffolded but not yet verified end-to-end:
 
 - **Phase 2:** `distill-paper`, `repro-harness`, `graft-change`, and the
-  `SkyPilotAdapter` scaffold.
+  `SkyPilotAdapter` task/result path. Real SkyPilot infrastructure proof is not
+  recorded yet.
 - **Phase 3:** `escalate`, `attribute`, and parallel/grid orchestration scaffolds.
 
 The first real milestone for any production direction remains **building that
@@ -129,6 +132,14 @@ For fresh clones or git worktrees, enable the checked-in environment hook once:
 
 ```bash
 git config core.hooksPath .githooks
+```
+
+SkyPilot is intentionally optional so the reference core stays lightweight. To
+install the SkyPilot CLI for SSH/Kubernetes smoke tests:
+
+```bash
+uv sync --group sky
+uv run --group sky sky --version
 ```
 
 ## Acknowledgements

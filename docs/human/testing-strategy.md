@@ -23,6 +23,33 @@ but it is not sufficient for a release or external demo.
 | SkyPilot local Kubernetes | Prove the Kubernetes API path can be reached locally | `SkyPilotAdapter` targeting `sky local up` | optional/manual smoke |
 | Cloud or production Kubernetes GPU | Prove managed multi-node/cloud execution | `SkyPilotAdapter` targeting real infra | future/manual |
 
+## Implemented command surface
+
+CI verifies the CPU-safe pieces of this matrix:
+
+```bash
+uv run python examples/ratchet_demo/run_demo.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
+```
+
+The second command covers the CPU ratchet loop, ledger/artifact safeguards,
+`SkyPilotAdapter` SSH Node Pool task generation, SkyPilot result parsing through
+an injectable runner, the nanochat evaluator wrapper, and scripted nanochat
+proposal helpers.
+
+Release-required GPU evidence uses the manual runbooks in
+[`../../examples/nanochat/`](../../examples/nanochat/):
+
+```bash
+uv run python examples/nanochat/run_local_gpu.py /path/to/autoresearch --max-iterations 2
+uv sync --group sky
+uv run python examples/nanochat/skypilot_ssh_smoke.py --pool <pool> --accelerators <GPU>:1 --worktree /path/to/autoresearch
+```
+
+Use `--print-yaml` on `skypilot_ssh_smoke.py` to inspect the generated
+`infra: ssh/<pool>` task before launching it. SkyPilot is an optional dependency
+group so the default CPU development environment remains lightweight.
+
 ## Why SSH Node Pool is the first SkyPilot GPU path
 
 The primary GPU proof should be the shortest path to the user's hardware: run
@@ -99,25 +126,37 @@ shared GPU boxes.
 
 1. Keep the CPU ratchet demo as the CI smoke test and add a second CPU demo only
    if it makes scalar-plus-veto behavior clearer. Do not let a second CPU demo
-   block the GPU work.
+   block the GPU work. **Current status:** implemented and CI-covered.
 2. Turn `examples/nanochat/` into the release-required GPU demo with a frozen
-   evaluator, a short smoke budget, and an overnight budget. Prefer a
-   deterministic budget for comparable release evidence.
+   evaluator wrapper, a short smoke budget, and an overnight budget. Prefer a
+   deterministic budget for comparable release evidence. **Current status:**
+   runbook and wrapper implemented; a real RTX 3090 short smoke is recorded in
+   [`release-evidence.md`](./release-evidence.md), but overnight/improvement
+   evidence is still missing.
 3. Extend `SkyPilotAdapter` enough to generate and run a task against an
    existing SSH Node Pool, including an explicit `infra: ssh/<pool>` resource
    target, then parse the same `EvalResult` JSON line as `LocalAdapter`.
+   **Current status:** task generation and runner/result parsing implemented and
+   test-covered; SkyPilot CLI packaging is available through `uv sync --group
+   sky`; actual SSH-pool launch evidence not yet recorded.
 4. Implement the first nanochat proposals as scripted proposal functions, not
    free-form agent edits. This proves the evaluator, ledger, rollback, and
    adapter contracts before adding the risk and variance of live agent proposal
-   generation.
+   generation. **Current status:** implemented in
+   [`../../examples/nanochat/proposals.py`](../../examples/nanochat/proposals.py).
 5. Add manual runbooks for:
    - local GPU nanochat;
    - SkyPilot SSH GPU nanochat;
    - optional `sky local up` Kubernetes smoke.
+   **Current status:** all three command surfaces exist. The Kubernetes path
+   remains optional/manual and depends on `sky local up` plus local cluster
+   runtime/GPU setup.
 6. Keep CI focused on CPU tests unless a GPU runner is intentionally provisioned.
 7. Treat timeout, nonzero exit, non-finite metric, or missing JSON result as a
    ledgered veto/crash according to the existing ratchet contract, not as an
-   informal failed command.
+   informal failed command. **Current status:** local and nanochat evaluator
+   wrappers map these outcomes to vetoes; `run_ratchet` records crashes and
+   policy violations in the ledger.
 
 ## Acceptance criteria
 

@@ -9,6 +9,10 @@ All notable changes to this project are documented here. The format is based on
 - **Extensibility architecture docs** — added an architecture SVG, an explicit
   extension model, and a concise Executor lessons note that explains how Talos
   extracts the internal operator pattern without importing platform complexity.
+- **Standalone testing strategy implementation** — added the nanochat evaluator
+  wrapper, scripted smoke proposals, local-GPU and SkyPilot SSH runbooks, tested
+  SkyPilot SSH task/result plumbing, and external evaluator hashing in the
+  ledger.
 - **Ratchet hardening and scope clarity** — `run_ratchet` now enforces a default
   iteration cap, requires a clean experiment worktree, cleans only untracked files
   created by failed/reverted attempts, preserves patches for untracked candidate
@@ -23,15 +27,16 @@ All notable changes to this project are documented here. The format is based on
   human review; switch search strategy on plateau) and `attribute` (ablation +
   multi-seed confirmation) skill runbooks, plus `src/talos/orchestration.py`
   (`factorial_grid` tested; `run_grid` an unverified scaffold).
-- **Phase 2 (v0, unverified)** — `distill-paper` / `repro-harness` /
-  `graft-change` skill runbooks and a `SkyPilotAdapter` scaffold
-  (`src/talos/adapters/skypilot.py`). Documented and reviewable; not yet run
-  end-to-end (no cloud/codebase in CI).
+- **Phase 2 (v0, partially verified)** — `distill-paper` / `repro-harness` /
+  `graft-change` skill runbooks and `SkyPilotAdapter`
+  (`src/talos/adapters/skypilot.py`). SSH task generation and result parsing are
+  tested; real SkyPilot infrastructure execution is not yet recorded.
 - **Phase 1** — the keep/revert ratchet engine (`src/talos/ratchet.py`), the
   `local` subprocess adapter (`src/talos/adapters/local.py`, budget-bounded), the
   git+TSV append-only ledger (`src/talos/ledger.py`), the `ratchet-experiment`
-  skill, a runnable CPU demo (`examples/ratchet_demo/`), the GPU reference doc
-  (`examples/nanochat/`), and an end-to-end test (`tests/test_ratchet_loop.py`).
+  skill, a runnable CPU demo (`examples/ratchet_demo/`), the GPU reference
+  runbook (`examples/nanochat/`), and an end-to-end test
+  (`tests/test_ratchet_loop.py`).
 - **Phase 0** — the L2 eval contract (`src/talos/contract.py`: `EvalResult`,
   `Veto`, `is_improvement`) and a runnable, pure-Python reference evaluator
   (`constraints/examples/toy_mlp/`: frozen `evaluator.py`, agent-editable
@@ -48,4 +53,5 @@ All notable changes to this project are documented here. The format is based on
   `agent-skill/` (the four planned skills).
 
 > Talos is **pre-alpha**: Phase 0–1 are implemented and CPU-verified; Phase 2–3
-> are reviewable v0 scaffolds. See `STATUS.md` and `ROADMAP.md`.
+> are reviewable v0 surfaces. Real GPU/SkyPilot evidence is still required for a
+> release or external demo. See `STATUS.md` and `ROADMAP.md`.

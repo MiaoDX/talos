@@ -1,21 +1,26 @@
-"""End-to-end test of the keep/revert ratchet on the toy task.
-
-Runnable directly (`python tests/test_ratchet_loop.py`) or via pytest.
-"""
+"""End-to-end tests for the ratchet loop and standalone demo surfaces."""
 import shutil
 import sys
+import subprocess
+import hashlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "examples" / "ratchet_demo"))
+sys.path.insert(0, str(REPO / "examples" / "nanochat"))
 
 from talos.adapters import ExecutionAdapter       # noqa: E402
 from talos.adapters import LocalAdapter          # noqa: E402
+from talos.adapters import SkyPilotAdapter       # noqa: E402
 from talos.ledger import TSVLedger               # noqa: E402
 from talos.ratchet import Proposal, run_ratchet  # noqa: E402
 import run_demo                                  # noqa: E402
 from talos.orchestration import factorial_grid   # noqa: E402
+import evaluator as nanochat_evaluator           # noqa: E402
+import proposals as nanochat_proposals           # noqa: E402
+import skypilot_local_k8s_smoke                  # noqa: E402
+import skypilot_ssh_smoke                        # noqa: E402
 
 
 def _git(work, *args):
@@ -222,6 +227,24 @@ def test_baseline_evaluator_side_effects_are_reset_before_experiments():
         shutil.rmtree(work, ignore_errors=True)
 
 
+def test_external_evaluator_records_path_and_file_hash(tmp_path):
+    work = run_demo.setup_workdir()
+    evaluator = tmp_path / "external_evaluator.py"
+    evaluator.write_text((work / "evaluator.py").read_text())
+
+    try:
+        out = run_ratchet(work, [],
+                          evaluator=str(evaluator),
+                          adapter=LocalAdapter(budget_s=30),
+                          ledger=TSVLedger(work / "results.tsv"),
+                          lower_is_better=True)
+        rows = out["ledger"].rows()
+        assert rows[0]["evaluator"] == str(evaluator)
+        assert rows[0]["evaluator_sha"] == hashlib.sha256(evaluator.read_bytes()).hexdigest()
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
 def test_factorial_grid_is_stable_cartesian_product():
     assert factorial_grid({"lr": [0.1, 0.2], "seed": [1, 2]}) == [
         {"lr": 0.1, "seed": 1},
@@ -231,17 +254,110 @@ def test_factorial_grid_is_stable_cartesian_product():
     ]
 
 
-if __name__ == "__main__":
-    test_ratchet_keeps_reverts_and_improves()
-    test_local_adapter_satisfies_execution_adapter_protocol()
-    test_veto_row_has_no_metric()
-    test_ledger_records_artifacts_and_eval_metadata()
-    test_policy_violation_reverts_protected_path_and_records_artifact()
-    test_policy_violation_cleans_new_untracked_files_and_records_patch()
-    test_proposal_exception_is_recorded_and_worktree_is_reset()
-    test_proposal_exception_cleans_new_untracked_files()
-    test_ratchet_enforces_iteration_cap()
-    test_ratchet_requires_clean_experiment_worktree()
-    test_baseline_evaluator_side_effects_are_reset_before_experiments()
-    test_factorial_grid_is_stable_cartesian_product()
-    print("PASS: ratchet keep/revert/veto + ledger/audit safeguards verified")
+def test_skypilot_adapter_generates_ssh_node_pool_task_yaml():
+    adapter = SkyPilotAdapter(
+        infra="ssh/rtx3090",
+        accelerators="RTX3090:1",
+        setup="uv sync",
+        python="uv run python",
+        cluster_name="talos-rtx3090",
+    )
+    yaml = adapter.task_yaml("examples/nanochat/evaluator.py")
+    assert "infra: ssh/rtx3090" in yaml
+    assert "accelerators: RTX3090:1" in yaml
+    assert "uv run python examples/nanochat/evaluator.py" in yaml
+    assert adapter.launch_command("task.yaml") == [
+        "sky", "launch", "-y", "--cluster", "talos-rtx3090", "task.yaml"
+    ]
+
+
+def test_nanochat_skypilot_helpers_generate_manual_task_shapes():
+    ssh = skypilot_ssh_smoke.build_adapter("rtx3090", "RTX3090:1", 10)
+    assert "infra: ssh/rtx3090" in ssh.task_yaml("talos_nanochat_evaluator.py")
+    local_k8s = skypilot_local_k8s_smoke.build_adapter(None, 10)
+    yaml = local_k8s.task_yaml("talos_nanochat_evaluator.py")
+    assert "infra: k8s" in yaml
+    assert "accelerators:" not in yaml
+
+
+def test_skypilot_adapter_parses_evalresult_from_runner(monkeypatch, tmp_path):
+    monkeypatch.setattr("talos.adapters.skypilot.shutil.which", lambda _: "/usr/bin/sky")
+    calls = []
+
+    def runner(cmd, cwd, timeout):
+        calls.append((cmd, cwd, timeout))
+        assert "infra: ssh/gpu" in (cwd / ".talos-skypilot-task.yaml").read_text()
+        return subprocess.CompletedProcess(
+            cmd, 0, stdout='log\n{"scalar":0.42,"vetoes":[],"metrics":{"val_bpb":0.42},"seeds":[7],"lower_is_better":true}\n',
+            stderr="",
+        )
+
+    adapter = SkyPilotAdapter(
+        infra="ssh/gpu",
+        accelerators="L4:1",
+        budget_s=12,
+        cluster_name="talos-gpu",
+        runner=runner,
+    )
+    result = adapter.run("evaluator.py", tmp_path)
+    assert result.scalar == 0.42
+    assert result.metrics == {"val_bpb": 0.42}
+    assert result.seeds == [7]
+    assert calls[0] == (
+        ["sky", "launch", "-y", "--cluster", "talos-gpu", ".talos-skypilot-task.yaml"],
+        tmp_path,
+        12,
+    )
+    assert not (tmp_path / ".talos-skypilot-task.yaml").exists()
+
+
+def test_skypilot_adapter_maps_missing_cli_to_veto(monkeypatch, tmp_path):
+    monkeypatch.setattr("talos.adapters.skypilot.shutil.which", lambda _: None)
+    result = SkyPilotAdapter().run("evaluator.py", tmp_path)
+    assert result.vetoed
+    assert result.vetoes[0].name == "skypilot_missing"
+
+
+def test_nanochat_evaluator_parses_summary_and_emits_contract(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    cmd = (
+        "python -c \"print('---'); "
+        "print('val_bpb:          0.997900'); "
+        "print('peak_vram_mb:     1000.0'); "
+        "print('num_steps:        12')\""
+    )
+    assert nanochat_evaluator.main([
+        "--train-cmd", cmd,
+        "--timeout-s", "5",
+        "--min-steps", "10",
+        "--seed", "123",
+    ]) == 0
+    result = nanochat_evaluator.json.loads(capsys.readouterr().out)
+    assert result["scalar"] == 0.9979
+    assert result["vetoes"] == []
+    assert result["metrics"]["peak_vram_mb"] == 1000.0
+    assert result["seeds"] == [123]
+    assert (tmp_path / "run.log").exists()
+
+
+def test_nanochat_evaluator_vetoes_missing_metric(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    assert nanochat_evaluator.main([
+        "--train-cmd", "python -c \"print('no metric here')\"",
+        "--timeout-s", "5",
+    ]) == 0
+    result = nanochat_evaluator.json.loads(capsys.readouterr().out)
+    assert result["scalar"] is None
+    assert result["vetoes"][0]["name"] == "missing_metric"
+
+
+def test_nanochat_smoke_proposals_mutate_only_train_file(tmp_path):
+    train = tmp_path / "train.py"
+    train.write_text('WINDOW_PATTERN = "SSSL"\nDEPTH = 4\nDEVICE_BATCH_SIZE = 16\n')
+    proposals = nanochat_proposals.build_smoke_proposals()
+    proposals[0].apply(tmp_path)
+    assert "DEPTH = 3" in train.read_text()
+    proposals[1].apply(tmp_path)
+    text = train.read_text()
+    assert 'WINDOW_PATTERN = "L"' in text
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["train.py"]
