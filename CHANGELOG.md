@@ -6,6 +6,9 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
+- **Extensibility architecture docs** — added an architecture SVG, an explicit
+  extension model, and a concise Executor lessons note that explains how Talos
+  extracts the internal operator pattern without importing platform complexity.
 - **Ratchet hardening and scope clarity** — `run_ratchet` now enforces a default
   iteration cap, requires a clean experiment worktree, cleans only untracked files
   created by failed/reverted attempts, preserves patches for untracked candidate

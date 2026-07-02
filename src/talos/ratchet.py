@@ -17,6 +17,7 @@ from itertools import islice
 from pathlib import Path
 from typing import Callable, Optional
 
+from .adapters.base import ExecutionAdapter
 from .adapters.local import LocalAdapter
 from .contract import EvalResult, Veto, is_improvement
 from .ledger import TSVLedger
@@ -164,7 +165,7 @@ def _with_veto(result: EvalResult, name: str, detail: str) -> EvalResult:
 
 
 def run_ratchet(workdir, proposals, *, evaluator: str = "evaluator.py",
-                adapter: Optional[LocalAdapter] = None,
+                adapter: Optional[ExecutionAdapter] = None,
                 ledger: Optional[TSVLedger] = None,
                 lower_is_better: Optional[bool] = None,
                 editable_paths: Optional[list[str]] = None,

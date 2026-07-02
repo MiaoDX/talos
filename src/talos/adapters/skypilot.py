@@ -23,9 +23,10 @@ import textwrap
 from pathlib import Path
 
 from ..contract import EvalResult, Veto
+from .base import ExecutionAdapter
 
 
-class SkyPilotAdapter:
+class SkyPilotAdapter(ExecutionAdapter):
     def __init__(self, *, infra: str = "k8s", accelerators: str | None = "L4:1",
                  budget_s: float = 3600.0, setup: str = ""):
         # `accelerators` pins a hardware class for comparability (see eval-first.md).

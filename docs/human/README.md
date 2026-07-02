@@ -9,6 +9,8 @@ Current orientation starts here:
 - [`../../STATUS.md`](../../STATUS.md) - current state, checks, next work, blockers
 - [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) - layer map and contracts
 - [`../../ROADMAP.md`](../../ROADMAP.md) - phase sequencing and strategy triggers
+- [`executor-lessons.md`](./executor-lessons.md) - portable lessons extracted
+  from the internal operator repo that inspired Talos
 
 Keep generated evidence, active execution notes, and agent-only runbooks outside
 this folder unless a human doc intentionally promotes them into current project
