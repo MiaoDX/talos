@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-labelledby="title desc">
+  <title id="title">SkyPilot RTX 3090 SSH smoke result</title>
+  <desc id="desc">SkyPilot same-host SSH job 2 succeeded with validation BPB 1.181977, 7846 steps, 334.8 total seconds, and no vetoes.</desc>
+  <rect width="760" height="420" fill="#ffffff"/>
+  <text x="56" y="42" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#202124">SkyPilot SSH smoke: RTX 3090 job succeeded</text>
+  <text x="56" y="68" font-family="Arial, sans-serif" font-size="13" fill="#5f6368">talos-rtx3090 job 2 - 2026-07-02 18:50-18:57 CST - log ~/sky_logs/sky-2026-07-02-18-50-28-135583</text>
+
+  <rect x="56" y="104" width="648" height="46" rx="4" fill="#e6f4ea" stroke="#188038"/>
+  <circle cx="82" cy="127" r="9" fill="#188038"/>
+  <text x="102" y="133" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#188038">EvalResult accepted: no vetoes</text>
+  <text x="420" y="133" font-family="Arial, sans-serif" font-size="14" fill="#202124">lower is better</text>
+
+  <line x1="90" y1="340" x2="670" y2="340" stroke="#202124" stroke-width="1.4"/>
+  <line x1="90" y1="188" x2="90" y2="340" stroke="#202124" stroke-width="1.4"/>
+  <text x="380" y="384" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#202124">Metric</text>
+  <text x="32" y="264" text-anchor="middle" transform="rotate(-90 32 264)" font-family="Arial, sans-serif" font-size="14" fill="#202124">Normalized value</text>
+
+  <line x1="90" y1="302" x2="670" y2="302" stroke="#dadce0"/>
+  <line x1="90" y1="264" x2="670" y2="264" stroke="#dadce0"/>
+  <line x1="90" y1="226" x2="670" y2="226" stroke="#dadce0"/>
+  <line x1="90" y1="188" x2="670" y2="188" stroke="#dadce0"/>
+
+  <rect x="128" y="205.2" width="76" height="134.8" fill="#1a73e8"/>
+  <rect x="272" y="214.4" width="76" height="125.6" fill="#188038"/>
+  <rect x="416" y="272.4" width="76" height="67.6" fill="#f9ab00"/>
+  <rect x="560" y="308.6" width="76" height="31.4" fill="#d93025"/>
+
+  <text x="166" y="196" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#1a73e8">1.181977</text>
+  <text x="310" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#188038">7846</text>
+  <text x="454" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#b06000">334.8s</text>
+  <text x="598" y="299" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#d93025">1900MB</text>
+
+  <text x="166" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">val_bpb</text>
+  <text x="310" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">num_steps</text>
+  <text x="454" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">total_seconds</text>
+  <text x="598" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#202124">peak_vram</text>
+
+  <text x="56" y="404" font-family="Arial, sans-serif" font-size="12" fill="#5f6368">Smoke gate only: proves SkyPilot SSH execution and EvalResult parsing, not overnight improvement.</text>
+</svg>

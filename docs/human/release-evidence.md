@@ -11,15 +11,16 @@ it should not copy raw experiment history into the Talos control repo.
 | CPU minimal demo | Normal local checks in [`../../STATUS.md`](../../STATUS.md). | Passing |
 | GPU nanochat local short smoke | RTX 3090 run on 2026-07-02 in `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch`; baseline `val_bpb=1.16269`; scripted candidate `DEPTH 4 -> 3` produced `val_bpb=1.182209` and was reverted. | Passing as a short smoke |
 | GPU nanochat overnight/improvement | No overnight ledger yet. | Missing |
-| SkyPilot SSH GPU | API server is healthy and the same-host SSH pool config was created, but `sky ssh up --infra rtx3090` is blocked by non-interactive sudo on localhost. | Blocked |
+| SkyPilot SSH GPU | Same-host `rtx3090` SSH pool job 2 succeeded on 2026-07-02 with `val_bpb=1.181977`, `num_steps=7846`, and no vetoes. | Passing as a short smoke |
 | SkyPilot local Kubernetes smoke | Optional; no current evidence recorded in this repo. | Not run |
 
-Until the GPU rows above link to current target worktree evidence, Talos is not
-release-ready for an external GPU demo.
+Until the overnight/improvement row links to current target worktree evidence,
+Talos is not release-ready for an external GPU demo.
 
 ## Review artifacts
 
 - Short-smoke visual summary: [`assets/rtx3090-short-smoke.svg`](./assets/rtx3090-short-smoke.svg)
+- SkyPilot smoke visual summary: [`assets/rtx3090-skypilot-smoke.svg`](./assets/rtx3090-skypilot-smoke.svg)
 - Target ledger: `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch/results.tsv`
 - Candidate artifact: `/tmp/talos_nanochat_gpu_UzMZRz/autoresearch/.talos/runs/exp-0001/`
 
@@ -35,10 +36,8 @@ release-ready for an external GPU demo.
     `num_steps=7249`, `peak_vram_mb=1900.3`, `depth=4`
   - candidate: `DEPTH 4 -> 3`, `val_bpb=1.182209`, `status=revert`,
     `artifact_ref=.talos/runs/exp-0001`
-- SkyPilot SSH GPU smoke: not run. `uv sync --group sky` installs the CLI and
-  `uv run --group sky sky api info` currently reports no connected SkyPilot API
-  server. Next proof needs `sky api start` or `sky api login`, plus a configured
-  SSH Node Pool.
+- SkyPilot SSH GPU smoke: see the same-day section below; this now has a real
+  same-host RTX 3090 result through SkyPilot.
 - Hardware/runtime: NVIDIA GeForce RTX 3090, driver `570.211.01`, 24576 MiB;
   target env `torch==2.9.1+cu128`.
 - Budget: upstream `TIME_BUDGET=300` seconds per train run, using an RTX3090
@@ -51,12 +50,12 @@ release-ready for an external GPU demo.
   `.talos/runs/exp-0001/patch.diff`.
 - Reviewer notes: this proves the local GPU path can run a real nanochat
   evaluator on RTX 3090-class hardware. It also proves the optional SkyPilot CLI
-  dependency group installs. It does not satisfy the overnight release gate or
-  the SkyPilot SSH GPU gate.
+  dependency group installs. It does not satisfy the overnight release gate.
 
-## 2026-07-02 same-host SkyPilot SSH attempt
+## 2026-07-02 same-host SkyPilot SSH smoke
 
-- Talos commit under test: `c0ed4aa` plus this evidence update.
+- Talos commit under test: `223e5c0` plus the SkyPilot parser/setup fix and this
+  evidence update.
 - SkyPilot packaging: `uv sync --group sky` installs the CLI; `uv run --group sky
   sky --version` reports `skypilot, version 0.12.3.post1`.
 - API server: `uv run --group sky sky api start` started a local server at
@@ -65,23 +64,32 @@ release-ready for an external GPU demo.
 - SSH pool config: `~/.sky/ssh_node_pools.yaml` now contains pool `rtx3090`
   pointing to `localhost`, user `mi`, key `/home/mi/.ssh/id_rsa`.
 - Local prerequisites verified: SSH to localhost with that key succeeds;
-  `nvidia-smi` over SSH reports `NVIDIA GeForce RTX 3090, 24576 MiB`; `jq` and
-  user-local `kubectl v1.36.2` are available.
+  `nvidia-smi` over SSH reports `NVIDIA GeForce RTX 3090, 24576 MiB`; `jq`,
+  `socat`, and user-local `kubectl v1.36.2` are available.
 - Generated task: `uv run --group sky python
   examples/nanochat/skypilot_ssh_smoke.py --pool rtx3090 --accelerators
   RTX3090:1 --print-yaml` emits `infra: ssh/rtx3090` and
-  `accelerators: RTX3090:1`.
-- Actual launch attempt: `uv run --group sky sky ssh up --infra rtx3090`.
-- Result: blocked before cluster creation. SSH connection to `localhost`
-  succeeded, then SkyPilot's bootstrap command failed at `sudo sshd -T` /
-  `sudo sed ... /etc/ssh/sshd_config` because sudo requires an interactive
-  password: `sudo: a terminal is required to read the password` and
-  `sudo: a password is required`.
-- Reviewer notes: this resolves the earlier "No SkyPilot API server is
-  connected" issue but does not satisfy the SkyPilot SSH GPU gate. Continuing
-  requires either passwordless sudo for the local user on this machine or a
-  password-bearing SSH Node Pool config, then rerunning `sky ssh up --infra
-  rtx3090` before launching the nanochat SkyPilot smoke.
+  `accelerators: RTX3090:1`; setup runs `uv sync` and `uv run prepare.py
+  --num-shards 1 --download-workers 2` so the remote pod has tokenizer/data
+  cache.
+- Infrastructure setup: `uv run --group sky sky ssh up --infra rtx3090`
+  succeeded after enabling non-interactive sudo for the local user, installing
+  `socat`, configuring k3s registry mirrors, and labeling the node with
+  `nvidia.com/gpu.product=NVIDIA-GeForce-RTX-3090`.
+- Actual smoke command: `uv run --group sky python
+  examples/nanochat/skypilot_ssh_smoke.py --pool rtx3090 --accelerators
+  RTX3090:1 --timeout-s 1800 --worktree
+  /tmp/talos_nanochat_gpu_UzMZRz/autoresearch`.
+- SkyPilot job: cluster `talos-rtx3090`, job `2`, status `SUCCEEDED`, resources
+  `1x[RTX3090:1]`, log path `~/sky_logs/sky-2026-07-02-18-50-28-135583`,
+  submitted `2026-07-02 18:50:38 CST`, ended `2026-07-02 18:57:01 CST`.
+- Result JSON: `scalar=1.181977`, `vetoes=[]`, `val_bpb=1.181977`,
+  `training_seconds=300.0`, `total_seconds=334.8`, `peak_vram_mb=1900.3`,
+  `mfu_percent=4.08`, `total_tokens_M=257.1`, `num_steps=7846`,
+  `num_params_M=11.5`, `depth=4`, `lower_is_better=true`.
+- Reviewer notes: this satisfies the SkyPilot SSH GPU short-smoke gate. It is
+  not an overnight/improvement result, and it does not exercise managed
+  Kubernetes or cloud GPU backends.
 
 ## Evidence template
 
