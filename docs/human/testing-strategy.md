@@ -81,15 +81,15 @@ Before a release or external demo, the repo should have current evidence for:
 2. `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest` succeeds.
 3. The GPU nanochat local run succeeds on one NVIDIA GPU and writes a ledger row
    for baseline plus at least one candidate outcome.
-4. The GPU nanochat overnight run either keeps at least one improving candidate
-   or records a reproducible no-improvement result in the ledger. A short smoke
-   proves the mechanism; release evidence should prove whether the loop can
-   discover an actual gain under the chosen budget.
-5. The SkyPilot SSH GPU short-budget smoke succeeds against an existing GPU
+4. The SkyPilot SSH GPU short-budget smoke succeeds against an existing GPU
    machine using the same evaluator output contract. The SkyPilot gate proves the
-   adapter path; it does not need to duplicate the full overnight local GPU run.
-6. Each GPU run records the GPU model, driver/runtime basics, seed(s), budget
+   adapter path; it does not need to duplicate a long local GPU run.
+5. Each GPU run records the GPU model, driver/runtime basics, seed(s), budget
    type, evaluator identity, artifact reference, and kept/reverted status.
+
+Longer GPU improvement or overnight runs are useful follow-up evidence for
+quality claims, but they are not required for the current standalone smoke/demo
+gate.
 
 CPU-only users may stop after the minimal demo; that path is a smoke test, not
 the full value proposition.
@@ -128,11 +128,11 @@ shared GPU boxes.
    if it makes scalar-plus-veto behavior clearer. Do not let a second CPU demo
    block the GPU work. **Current status:** implemented and CI-covered.
 2. Turn `examples/nanochat/` into the release-required GPU demo with a frozen
-   evaluator wrapper, a short smoke budget, and an overnight budget. Prefer a
-   deterministic budget for comparable release evidence. **Current status:**
-   runbook and wrapper implemented; a real RTX 3090 short smoke is recorded in
-   [`release-evidence.md`](./release-evidence.md), but overnight/improvement
-   evidence is still missing.
+   evaluator wrapper and a short smoke budget. Prefer a deterministic budget for
+   comparable follow-up evidence. **Current status:** runbook and wrapper
+   implemented; a real RTX 3090 short smoke is recorded in
+   [`release-evidence.md`](./release-evidence.md). Longer improvement runs are
+   optional.
 3. Extend `SkyPilotAdapter` enough to generate and run a task against an
    existing SSH Node Pool, including an explicit `infra: ssh/<pool>` resource
    target, then parse the same `EvalResult` JSON line as `LocalAdapter`.

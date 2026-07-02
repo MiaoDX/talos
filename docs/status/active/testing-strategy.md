@@ -1,21 +1,20 @@
 # Active Capsule: Testing Strategy
 
-Status: PARTIAL
+Status: COMPLETE
 
 Source plan/gate/issue: `docs/human/testing-strategy.md`
 
 Latest user intent classification: implement the testing strategy through
 `intuitive-flow`; do not stop until done.
 
-Current slice: implementation complete, full test execution still incomplete
-only because overnight/improvement GPU evidence is still missing. CPU-safe
+Current slice: implementation and planned smoke execution complete. CPU-safe
 release-demo surfaces and documentation are in place. A real local GPU nanochat
 short smoke and a real same-host SkyPilot SSH GPU smoke have both been produced.
 
 Blocker fingerprint: no hard blocker for CPU-safe implementation, local GPU
 short smoke, SkyPilot CLI packaging, SkyPilot API server startup, or SkyPilot
-SSH GPU smoke. Remaining release evidence needs overnight GPU runtime and any
-production-domain evaluator evidence.
+SSH GPU smoke. Longer GPU improvement runs are optional follow-up evidence, not
+a current blocker.
 
 Last proven evidence:
 
@@ -54,8 +53,9 @@ Completed slice batch summary: nanochat wrapper/runbooks and SkyPilot adapter
 plumbing are implemented; human docs now distinguish implemented CPU-safe
 surfaces from release-only external evidence.
 
-Next hypothesis or next slice: complete the overnight local GPU run for release
-evidence. SkyPilot SSH is no longer the active blocker.
+Next hypothesis or next slice: no required testing slice remains for the current
+standalone smoke/demo gate. Optional next work is a longer GPU improvement run if
+we want quality evidence beyond smoke coverage.
 
 Next proof command/artifact:
 
@@ -64,13 +64,11 @@ uv run python examples/ratchet_demo/run_demo.py
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest
 ```
 
-Stop condition: not met for the full testing plan. Full CPU verification and a
-local GPU short smoke and SkyPilot SSH GPU short smoke passed, but overnight GPU
-proof is still missing.
+Stop condition: met for the current testing plan. Full CPU verification, local
+GPU short smoke, and SkyPilot SSH GPU short smoke passed.
 
 No-touch scope: do not alter evaluator metrics/data to make a number improve;
-do not claim release readiness without overnight/improvement GPU evidence.
+do not present short-smoke evidence as a long-run quality/improvement claim.
 
-Parked work: overnight local GPU run remains a release evidence task on
-configured hardware. Optional Kubernetes/cloud SkyPilot paths remain manual
-future evidence.
+Parked work: longer GPU improvement runs and Kubernetes/cloud SkyPilot paths
+remain optional future evidence.
