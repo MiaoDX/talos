@@ -44,6 +44,11 @@ two things nobody has packaged well:
 Talos is **a thin methodology layer + a set of agent skills**, not a platform.
 Compute, experiment tracking, and sandboxing are **reused** from existing tools.
 
+This repository is the **control repo**: it contains the Talos method, reference
+engine, skills, docs, and tiny demos. Real experiment git history, ledgers, and
+`.talos/runs/` artifacts belong in the **target experiment worktree** passed to
+`run_ratchet`, not in this repo except when developing Talos itself.
+
 ## The workflow it supports
 
 ```
@@ -78,7 +83,7 @@ Implemented and verified now:
   `toy_mlp` reference evaluator under `constraints/examples/toy_mlp/`.
 - **Phase 1:** the keep/revert ratchet (`src/talos/ratchet.py`), local subprocess
   adapter, git+TSV append-only ledger, `ratchet-experiment` skill, runnable CPU
-  demo, and end-to-end tests.
+  demo, clean-worktree safeguards, a default iteration cap, and end-to-end tests.
 
 Scaffolded but not yet verified end-to-end:
 

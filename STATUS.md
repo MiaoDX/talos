@@ -25,7 +25,8 @@ Use `python -m pytest` when pytest is available.
 - **Phase 1** — the keep/revert ratchet (`src/talos/ratchet.py`), the `local`
   subprocess adapter (`src/talos/adapters/local.py`), the git+TSV ledger
   (`src/talos/ledger.py`), the `ratchet-experiment` skill, a runnable CPU demo
-  (`examples/ratchet_demo/`), and an end-to-end test (`tests/`). Verified on CPU.
+  (`examples/ratchet_demo/`), clean-worktree safeguards, a default iteration cap,
+  and end-to-end tests (`tests/`). Verified on CPU.
 
 ## Scaffolded (v0 — NOT yet verified)
 - **Phase 2** — `distill-paper`, `repro-harness`, `graft-change` skill runbooks
@@ -39,3 +40,10 @@ Use `python -m pytest` when pytest is available.
 ## Not yet runnable here
 - The GPU reference demo (`examples/nanochat/`) — needs a GPU.
 - Production domain evaluators — each sub-team writes its own under `constraints/`.
+
+## Git / ledger scope
+
+Talos is the control repo. Real experiment commits, ledgers, and `.talos/runs/`
+artifacts should live in the target experiment repo or isolated git worktree
+passed to `run_ratchet`, not in this repository except for Talos development and
+the tiny reference demos.
